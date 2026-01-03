@@ -1,0 +1,11 @@
+{
+  "home": {
+    "title": "Elegance Redefined",
+    "view_collection": "View Collection"
+  },
+  "nav": {
+    "collection": "Collection",
+    "about": "About",
+    "contact": "Contact"
+  }
+}

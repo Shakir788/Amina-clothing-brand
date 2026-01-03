@@ -1,0 +1,66 @@
+[
+  {
+    "id": "1",
+    "name": {
+      "en": "The Classic Linen Shirt",
+      "fr": "La Chemise en Lin Classique",
+      "ar": "قميص الكتان الكلاسيكي"
+    },
+    "price": "450 DHS",
+    "image": "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=80&w=800&auto=format&fit=crop",
+    "category": {
+      "en": "Tops",
+      "fr": "Hauts",
+      "ar": "القمصان"
+    },
+    "slug": "classic-linen-shirt"
+  },
+  {
+    "id": "2",
+    "name": {
+      "en": "Midnight Silk Kaftan",
+      "fr": "Caftan en Soie de Minuit",
+      "ar": "قفطان الحرير الليلي"
+    },
+    "price": "1200 DHS",
+    "image": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=800&auto=format&fit=crop",
+    "category": {
+      "en": "Dresses",
+      "fr": "Robes",
+      "ar": "الفساتين"
+    },
+    "slug": "midnight-silk-dress"
+  },
+  {
+    "id": "3",
+    "name": {
+      "en": "Oversized Sand Blazer",
+      "fr": "Blazer Sable Oversize",
+      "ar": "سترة رملية واسعة"
+    },
+    "price": "850 DHS",
+    "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=800&auto=format&fit=crop",
+    "category": {
+      "en": "Outerwear",
+      "fr": "Vêtements d'extérieur",
+      "ar": "ملابس خارجية"
+    },
+    "slug": "oversized-beige-blazer"
+  },
+  {
+    "id": "4",
+    "name": {
+      "en": "Pleated Wide Trousers",
+      "fr": "Pantalon Large Plissé",
+      "ar": "بنطلون واسع مطوي"
+    },
+    "price": "550 DHS",
+    "image": "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop",
+    "category": {
+      "en": "Bottoms",
+      "fr": "Bas",
+      "ar": "السراويل"
+    },
+    "slug": "pleated-wide-trousers"
+  }
+]
