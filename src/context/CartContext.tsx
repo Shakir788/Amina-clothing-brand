@@ -2,24 +2,24 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-// Product ka type define kar rahe hain
-type CartItem = {
+interface CartItem {
   id: string;
-  name: string; // English name store karenge simplicity ke liye
-  price: string;
+  name: string;
+  price: string; // "1200 DHS"
   image: string;
   slug: string;
   quantity: number;
-};
+}
 
-type CartContextType = {
+interface CartContextType {
   items: CartItem[];
-  addToCart: (product: any, lang: string) => void;
+  addToCart: (item: Omit<CartItem, "quantity">) => void;
   removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void; // 👈 Ye Naya Hai
   toggleCart: () => void;
   isCartOpen: boolean;
   cartTotal: number;
-};
+}
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -27,56 +27,54 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // LocalStorage se purana cart load karo (Agar user wapas aaye)
+  // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("amina-cart");
-    if (savedCart) setItems(JSON.parse(savedCart));
+    if (savedCart) {
+      setItems(JSON.parse(savedCart));
+    }
   }, []);
 
-  // Jab bhi cart change ho, save kar lo
+  // Save cart to localStorage whenever items change
   useEffect(() => {
     localStorage.setItem("amina-cart", JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: any, lang: string) => {
-    setItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === product.id);
-      
-      // Agar item pehle se hai, to quantity badha do
-      if (existingItem) {
-        return currentItems.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+  const addToCart = (newItem: Omit<CartItem, "quantity">) => {
+    setItems((prev) => {
+      const existing = prev.find((item) => item.id === newItem.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      
-      // Naya item add karo
-      // Note: Hum price string "450 DHS" se number nikal rahe hain calculation ke liye
-      return [...currentItems, {
-        id: product.id,
-        name: product.name.en || product.name, // Hamesha English naam save karenge logic ke liye
-        price: product.price,
-        image: product.image,
-        slug: product.slug,
-        quantity: 1
-      }];
+      return [...prev, { ...newItem, quantity: 1 }];
     });
-    setIsCartOpen(true); // Cart khul jaye add karte hi
+    setIsCartOpen(true);
   };
 
   const removeFromCart = (id: string) => {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const toggleCart = () => setIsCartOpen((prev) => !prev);
+  // 👇 Ye Naya Function Hai (Quantity Change ke liye)
+  const updateQuantity = (id: string, newQuantity: number) => {
+    if (newQuantity < 1) return; // 1 se neeche nahi jayega
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item))
+    );
+  };
 
-  // Total Price Calculate karna (Thoda tricky kyunki price text mein hai "450 DHS")
+  const toggleCart = () => setIsCartOpen(!isCartOpen);
+
+  // Calculate Total
   const cartTotal = items.reduce((total, item) => {
-    const priceNum = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
-    return total + (priceNum * item.quantity);
+    const priceNumber = parseInt(item.price.replace(/\D/g, "")); // "1200 DHS" -> 1200
+    return total + priceNumber * item.quantity;
   }, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, toggleCart, isCartOpen, cartTotal }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, toggleCart, isCartOpen, cartTotal }}>
       {children}
     </CartContext.Provider>
   );
@@ -84,6 +82,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
 export function useCart() {
   const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within a CartProvider");
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
   return context;
 }
