@@ -4,7 +4,8 @@ import "../globals.css";
 import { CartProvider } from "@/context/CartContext";
 import CartSidebar from "../../components/cart/CartSidebar"; 
 import AIChatBot from "@/components/AIChatBot"; 
-import Header from "@/components/layout/Header"; // 👈 Path check kar lena
+import Header from "@/components/layout/Header"; 
+import { getDictionary } from "@/lib/getDictionary"; // 👈 New Import for Translations
 
 // Fonts setup
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -16,20 +17,25 @@ export const metadata: Metadata = {
   description: "Discover the elegance of modern Moroccan Kaftans and Dresses.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({ // 👈 'async' zaroori hai data fetch ke liye
   children,
   params
 }: {
   children: React.ReactNode;
   params: { lang: string };
 }) {
+  
+  // 1. Language ke hisab se Dictionary load karo
+  const dict = await getDictionary(params.lang);
+
   return (
-    <html lang={params.lang}>
+    // 'dir' add kiya taaki Arabic me text right-to-left ho jaye
+    <html lang={params.lang} dir={params.lang === 'ar' ? 'rtl' : 'ltr'}>
       <body className={`${inter.variable} ${playfair.variable} ${amiri.variable} font-sans bg-amina-sand text-amina-black antialiased`}>
         <CartProvider>
           
-          {/* 👇 YAHAN CHANGE KIYA HAI: 'lang' pass kiya hai */}
-          <Header lang={params.lang} /> 
+          {/* 👇 AB HUM 'dict' BHI PASS KAR RAHE HAIN */}
+          <Header lang={params.lang} dict={dict.header} /> 
           
           {children}
           

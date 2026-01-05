@@ -1,0 +1,12 @@
+{
+  "header": {
+    "collection": "Collection",
+    "about": "À Propos",
+    "cart": "Panier"
+  },
+  "home": {
+    "title": "L'Élégance Redéfinie",
+    "subtitle": "Découvrez le silence du luxe.",
+    "button": "Voir la Collection"
+  }
+}
