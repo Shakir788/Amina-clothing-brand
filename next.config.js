@@ -4,7 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: 'cdn.sanity.io', // 👈 Ye line Sanity ki images allow karegi
+      },
+       {
+        protocol: 'https',
+        hostname: 'images.unsplash.com', // 👈 Ye Fake Data wali images ke liye (optional)
       },
     ],
   },
