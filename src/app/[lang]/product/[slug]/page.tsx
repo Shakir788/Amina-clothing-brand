@@ -1,7 +1,7 @@
-import { getProductBySlug, getProducts } from "@/lib/getProducts"; // getProducts add kiya
+import { getProductBySlug, getProducts } from "@/lib/getProducts";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link"; // Link add kiya navigation ke liye
+import Link from "next/link";
 import AddToCartButton from "@/components/product/AddToCartButton";
 
 export default async function ProductPage({ params }: { params: { slug: string; lang: string } }) {
@@ -54,8 +54,9 @@ export default async function ProductPage({ params }: { params: { slug: string; 
                 {name}
               </h1>
               
+              {/* 👇 UPDATED: Added DHS here */}
               <p className="text-2xl font-medium text-amina-stone mb-8 pb-8 border-b border-amina-border inline-block w-full">
-                {product.price}
+                {product.price} <span className="text-sm align-top opacity-70">DHS</span>
               </p>
 
               <div className={`prose prose-sm text-amina-stone mb-10 leading-loose ${isArabic ? 'font-arabic text-lg' : ''}`}>
@@ -119,8 +120,9 @@ export default async function ProductPage({ params }: { params: { slug: string; 
                       <h3 className={`text-lg text-amina-black group-hover:text-amina-clay transition-colors ${isArabic ? 'font-arabic' : 'font-serif'}`}>
                         {itemName}
                       </h3>
+                      {/* 👇 UPDATED: Added DHS here too */}
                       <p className="text-sm font-medium text-amina-stone">
-                        {item.price}
+                        {item.price} DHS
                       </p>
                     </div>
                   </Link>

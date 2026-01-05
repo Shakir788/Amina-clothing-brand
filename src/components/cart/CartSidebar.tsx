@@ -7,7 +7,6 @@ import { useCart } from "@/context/CartContext";
 const PHONE_NUMBER = "212625609551";
 
 export default function CartSidebar() {
-  // 👇 updateQuantity yahan destructure kiya hai
   const { items, removeFromCart, updateQuantity, toggleCart, isCartOpen, cartTotal } = useCart();
 
   if (!isCartOpen) return null;
@@ -16,7 +15,8 @@ export default function CartSidebar() {
   const checkoutMessage = () => {
     let message = "Hi AMINA (Douaa), I would like to place an order:\n\n";
     items.forEach((item, index) => {
-      message += `${index + 1}. ${item.name} x${item.quantity} - ${item.price}\n`;
+      // 👇 Yahan bhi DHS add kar diya taaki message mein clear ho
+      message += `${index + 1}. ${item.name} x${item.quantity} - ${item.price} DHS\n`;
     });
     message += `\nTotal Estimate: ${cartTotal} DHS\n\nDo you have these in stock?`;
     return `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -61,13 +61,14 @@ export default function CartSidebar() {
                 <div className="flex-1 flex flex-col justify-between py-1">
                   <div>
                     <h3 className="font-serif text-amina-black text-lg leading-tight mb-1">{item.name}</h3>
-                    <p className="text-sm text-amina-stone font-medium">{item.price}</p>
+                    {/* 👇 UPDATED: Added DHS here */}
+                    <p className="text-sm text-amina-stone font-medium">{item.price} DHS</p>
                   </div>
 
                   {/* Quantity & Remove Controls */}
                   <div className="flex items-center justify-between mt-4">
                     
-                    {/* 👇 NEW PREMIUM QUANTITY SELECTOR */}
+                    {/* Quantity Selector */}
                     <div className="flex items-center border border-amina-border rounded-sm bg-white">
                       <button 
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
