@@ -1,13 +1,16 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react'; // 👈 useRef aur useEffect add kiya
 import { useParams } from 'next/navigation';
 
 export default function AIChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
   
+  // 👇 1. Scroll karne ke liye anchor banaya
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   // 1. Language detect karo (URL se)
   const params = useParams();
   const lang = (params?.lang as string) || 'en'; // Default English
@@ -20,6 +23,13 @@ export default function AIChatBot() {
   };
 
   const currentMessage = welcomeMessages[lang] || welcomeMessages.en;
+
+  // 👇 2. Jaise hi message aaye, neeche scroll karo
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading, isOpen]);
 
   return (
     <>
@@ -45,7 +55,7 @@ export default function AIChatBot() {
           {/* Header */}
           <div className="bg-white p-4 border-b border-amina-border flex items-center gap-3">
             
-            {/* 👇 UPDATED: Photo lagayi hai yahan */}
+            {/* Photo Section */}
             <img 
               src="/images/amina-profile.png" 
               alt="Amina Stylist"
@@ -78,6 +88,9 @@ export default function AIChatBot() {
               </div>
             ))}
             {isLoading && <p className="text-xs text-amina-stone animate-pulse">Thinking...</p>}
+            
+            {/* 👇 3. Ye Invisible element hai jahan chat aake rukegi */}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
