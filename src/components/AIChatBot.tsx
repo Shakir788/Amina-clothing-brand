@@ -2,7 +2,7 @@
 
 import { useChat } from 'ai/react';
 import { useState } from 'react';
-import { useParams } from 'next/navigation'; // 👈 URL se language pakdne ke liye
+import { useParams } from 'next/navigation';
 
 export default function AIChatBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,14 +12,13 @@ export default function AIChatBot() {
   const params = useParams();
   const lang = (params?.lang as string) || 'en'; // Default English
 
-  // 2. Har language ke liye Welcome Message set karo
+  // 2. Har language ke liye Welcome Message
   const welcomeMessages: Record<string, string> = {
     en: "Hello! 👋 I am your personal stylist. Looking for a wedding outfit or casual wear?",
     fr: "Bonjour ! 👋 Je suis votre styliste personnelle. Cherchez-vous une tenue de mariage ou décontractée ?",
     ar: "مرحباً! 👋 أنا مستشارة الأزياء الخاصة بك. هل تبحثين عن قفطان للمناسبات أو ملابس يومية؟",
   };
 
-  // Agar koi aur language ho to English dikhaye
   const currentMessage = welcomeMessages[lang] || welcomeMessages.en;
 
   return (
@@ -45,7 +44,14 @@ export default function AIChatBot() {
           
           {/* Header */}
           <div className="bg-white p-4 border-b border-amina-border flex items-center gap-3">
-            <div className="w-8 h-8 bg-amina-black rounded-full flex items-center justify-center text-white text-xs">AI</div>
+            
+            {/* 👇 UPDATED: Photo lagayi hai yahan */}
+            <img 
+              src="/images/amina-profile.png" 
+              alt="Amina Stylist"
+              className="w-10 h-10 rounded-full object-cover border-[1.5px] border-amina-clay shadow-sm"
+            />
+            
             <div>
               <h3 className="font-serif text-amina-black font-bold">Amina Stylist</h3>
               <p className="text-[10px] text-amina-stone uppercase tracking-widest">Personal Assistant</p>
@@ -54,7 +60,6 @@ export default function AIChatBot() {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/50">
-            {/* 👇 Yahan humne Logic lagaya hai: Agar chat khali hai to Welcome Message dikhao */}
             {messages.length === 0 && (
               <p className={`text-center text-sm text-amina-stone mt-10 whitespace-pre-line ${lang === 'ar' ? 'font-amiri text-base' : ''}`}>
                 {currentMessage}
@@ -80,7 +85,6 @@ export default function AIChatBot() {
             <input
               value={input}
               onChange={handleInputChange}
-              // Placeholder bhi change kar sakte hain agar chahein
               placeholder={lang === 'fr' ? "Posez une question..." : (lang === 'ar' ? "اسألي عن الموضة..." : "Ask me about fashion...")}
               className={`flex-1 text-sm bg-amina-sand/50 border-none rounded-lg px-3 py-2 focus:ring-1 focus:ring-amina-clay outline-none ${lang === 'ar' ? 'text-right' : ''}`}
             />

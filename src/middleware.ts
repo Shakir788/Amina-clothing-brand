@@ -31,6 +31,5 @@ export function middleware(request: any) {
 }
 
 export const config = {
-  // 👇 Isme bhi humne studio ko exclude kiya hai
-  matcher: ['/((?!_next|studio|api|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|images).*)'],
 }
