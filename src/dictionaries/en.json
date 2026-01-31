@@ -1,0 +1,12 @@
+{
+  "header": {
+    "collection": "Collection",
+    "about": "About",
+    "cart": "Cart"
+  },
+  "home": {
+    "title": "Elegance Redefined",
+    "subtitle": "Discover the silence of luxury.",
+    "button": "View Collection"
+  }
+}
