@@ -1,7 +1,9 @@
-"use client";
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import { client } from '@/sanity/lib/client'; // Sanity Client Import
+import ProductCard from '@/components/product/ProductCard'; // Tera Product Card Import
 
+// 1. Translations Logic
 const content = {
   en: {
     subtitle: "SPRING / SUMMER 2025",
@@ -9,7 +11,9 @@ const content = {
     description: "Discover the silence of luxury. A collection inspired by the golden dunes and the modern spirit.",
     cta: "View Collection",
     storyTitle: "The Essence",
-    storyText: "AMINA is not just a brand; it is a state of mind. Born from the earth, designed for the soul. We believe in fashion that whispers."
+    storyText: "AMINA is not just a brand; it is a state of mind. Born from the earth, designed for the soul. We believe in fashion that whispers.",
+    latestArrivals: "Latest Arrivals",
+    viewAll: "View All Products"
   },
   fr: {
     subtitle: "PRINTEMPS / ÉTÉ 2025",
@@ -17,7 +21,9 @@ const content = {
     description: "Découvrez le silence du luxe. Une collection inspirée par les dunes dorées et l'esprit moderne.",
     cta: "Voir la Collection",
     storyTitle: "L'Essence",
-    storyText: "AMINA n'est pas seulement une marque; c'est un état d'esprit. Né de la terre, conçu pour l'âme. Nous croyons en une mode qui chuchote."
+    storyText: "AMINA n'est pas seulement une marque; c'est un état d'esprit. Né de la terre, conçu pour l'âme. Nous croyons en une mode qui chuchote.",
+    latestArrivals: "Derniers Arrivages",
+    viewAll: "Voir Tous les Produits"
   },
   ar: {
     subtitle: "ربيع / صيف 2025",
@@ -25,107 +31,55 @@ const content = {
     description: "اكتشفي صمت الفخامة. تشكيلة مستوحاة من الكثبان الذهبية والروح العصرية.",
     cta: "تصفح المجموعة",
     storyTitle: "الجوهر",
-    storyText: "أمينة ليست مجرد علامة تجارية؛ إنها حالة ذهنية. ولدت من الأرض، وصممت للروح. نؤمن بالأزياء التي تهمس بالأناقة."
+    storyText: "أمينة ليست مجرد علامة تجارية؛ إنها حالة ذهنية. ولدت من الأرض، وصممت للروح. نؤمن بالأزياء التي تهمس بالأناقة.",
+    latestArrivals: "أحدث المنتجات",
+    viewAll: "عرض كل المنتجات"
   }
 };
 
-const videoPlaylist = [
-  "/video7.mp4",
-  "/video1.mov",
-  "/video2.mp4",
-  "/video3.mp4",
-  "/video4.mov",
-  "/video5.mp4",
-  "/video6.mp4"
-];
+// 2. Data Fetching Function (Server Side)
+async function getLatestProducts() {
+  // Fresh 8 products utha raha hoon
+  const query = `*[_type == "product"] | order(_createdAt desc)[0...8] {
+    _id,
+    name,
+    price,
+    originalPrice,
+    slug,
+    image,
+    category->
+  }`;
+  return await client.fetch(query);
+}
 
-export default function HomePage({ params }: { params: { lang: string } }) {
+// 3. Main Page Component
+export default async function HomePage({ params }: { params: { lang: string } }) {
+  const products = await getLatestProducts(); // Data yahan aayega
+  
   // @ts-ignore
   const t = content[params.lang] || content.en;
   const isArabic = params.lang === 'ar';
 
-  // 2 Players Logic
-  const videoRef1 = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  
-  const [activePlayer, setActivePlayer] = useState(1);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-
-  // Initial Load
-  useEffect(() => {
-    if (videoRef1.current) {
-      videoRef1.current.src = videoPlaylist[0];
-      videoRef1.current.play().catch(() => {});
-    }
-    if (videoRef2.current) {
-      // Background wale player ko agli video ke liye ready rakho
-      videoRef2.current.src = videoPlaylist[1];
-      videoRef2.current.load();
-    }
-  }, []);
-
-  const handleVideoEnd = () => {
-    const nextIndex = (currentVideoIndex + 1) % videoPlaylist.length;
-    const nextNextIndex = (currentVideoIndex + 2) % videoPlaylist.length;
-
-    // Switch Player
-    if (activePlayer === 1) {
-      // Player 2 ko chalao
-      videoRef2.current?.play().catch(() => {});
-      setActivePlayer(2);
-      
-      // Player 1 ko agli se agli video ke liye ready karo
-      if (videoRef1.current) {
-        videoRef1.current.src = videoPlaylist[nextNextIndex];
-        videoRef1.current.load();
-      }
-    } else {
-      // Player 1 ko chalao
-      videoRef1.current?.play().catch(() => {});
-      setActivePlayer(1);
-      
-      // Player 2 ko agli se agli video ke liye ready karo
-      if (videoRef2.current) {
-        videoRef2.current.src = videoPlaylist[nextNextIndex];
-        videoRef2.current.load();
-      }
-    }
-    
-    setCurrentVideoIndex(nextIndex);
-  };
-
   return (
     <div className={`min-h-screen bg-[#F4F1EA] ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
 
+      {/* ================= HERO SECTION ================= */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        
-        {/* PLAYER 1 */}
-        <div className={`absolute inset-0 transition-opacity duration-1000 ${activePlayer === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
+        <div className="absolute inset-0 z-0 bg-black">
           <video
-            ref={videoRef1}
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            className="absolute top-0 left-0 w-full h-full object-cover opacity-90"
+            autoPlay
             muted
+            loop
             playsInline
-            onEnded={handleVideoEnd}
-          />
+            preload="auto"
+          >
+            <source src="/video.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-white/20 bg-gradient-to-b from-white/30 via-transparent to-[#F4F1EA]" />
         </div>
 
-        {/* PLAYER 2 */}
-        <div className={`absolute inset-0 transition-opacity duration-1000 ${activePlayer === 2 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}>
-          <video
-            ref={videoRef2}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            muted
-            playsInline
-            onEnded={handleVideoEnd}
-          />
-        </div>
-
-        {/* Overlay */}
-        <div className="absolute inset-0 z-20 bg-white/20 bg-gradient-to-b from-white/30 via-transparent to-[#F4F1EA]" />
-
-        {/* Content */}
-        <div className="relative z-30 text-center px-6 max-w-4xl mt-20 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+        <div className="relative z-10 text-center px-6 max-w-4xl mt-20 animate-in fade-in slide-in-from-bottom-10 duration-1000">
           <p className="text-xs md:text-sm font-bold tracking-[0.3em] text-gray-900 mb-6 uppercase drop-shadow-sm">
             {t.subtitle}
           </p>
@@ -144,23 +98,58 @@ export default function HomePage({ params }: { params: { lang: string } }) {
         </div>
       </section>
 
-      {/* ESSENCE SECTION */}
-      <section className="relative py-24 px-6 bg-[#F4F1EA]">
+      {/* ================= ESSENCE SECTION ================= */}
+      <section className="relative py-20 px-6 bg-[#F4F1EA]">
         <div className="max-w-4xl mx-auto">
-          <div className="relative bg-gradient-to-b from-white to-[#F9F7F2] rounded-t-[50%] rounded-b-2xl p-12 md:p-20 text-center shadow-[0_20px_50px_-10px_rgba(212,163,115,0.2)] border border-[#D4A373]/30 transform hover:-translate-y-1 transition-transform duration-700">
-            <div className="flex justify-center mb-6">
-              <span className="text-4xl text-[#D4A373]">❦</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-[#2C2C2C] mb-6 tracking-tight">
+          <div className="text-center">
+            <span className="text-4xl text-[#D4A373] block mb-4">❦</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-[#2C2C2C] mb-4 tracking-tight">
               {t.storyTitle}
             </h2>
-            <div className="w-16 h-[2px] bg-[#D4A373]/50 mx-auto mb-10"></div>
-            <p className="text-lg md:text-xl text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
+            <div className="w-12 h-[1px] bg-[#D4A373] mx-auto mb-6"></div>
+            <p className="text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
               {t.storyText}
             </p>
           </div>
         </div>
       </section>
+
+      {/* ================= 👇 NEW: LATEST ARRIVALS GRID ================= */}
+      <section className="py-10 px-4 md:px-8 max-w-[1400px] mx-auto bg-[#F4F1EA]">
+        
+        {/* Section Heading */}
+        <div className="flex items-center justify-between mb-10 px-2">
+          <h2 className="text-2xl md:text-3xl font-serif text-black">
+            {t.latestArrivals}
+          </h2>
+          <Link href={`/${params.lang}/collection`} className="hidden md:block text-xs font-bold tracking-widest uppercase text-gray-500 hover:text-[#D4A373] transition">
+             {t.viewAll} →
+          </Link>
+        </div>
+
+        {/* Product Grid */}
+        {products.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10">
+            {products.map((product: any) => (
+              <ProductCard key={product._id} product={product} lang={params.lang} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400 py-20">Loading luxury pieces...</p>
+        )}
+
+        {/* Mobile View All Button */}
+        <div className="mt-12 text-center md:hidden">
+          <Link 
+            href={`/${params.lang}/collection`}
+            className="inline-block border-b border-black pb-1 text-xs font-bold tracking-[0.2em] uppercase hover:text-[#D4A373] hover:border-[#D4A373] transition-colors"
+          >
+            {t.viewAll}
+          </Link>
+        </div>
+
+      </section>
+
     </div>
   );
 }
