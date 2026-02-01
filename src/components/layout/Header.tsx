@@ -29,8 +29,9 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
     }
   }, [isSearchOpen]);
 
-  // 🔥 LIVE SEARCH LOGIC
+  // 🔥 LIVE SEARCH LOGIC (With AbortController & Safety Checks)
   useEffect(() => {
+    // 1. Minimum 2 characters required
     if (searchQuery.trim().length < 2) {
       setResults([]);
       setLoading(false);
@@ -52,7 +53,7 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
 
         const data = await res.json();
         
-        // Debugging ke liye (Console me check karna)
+        // Debugging Log
         console.log("🔥 API DATA in Header:", data);
 
         setResults(data?.results || []);
@@ -95,7 +96,7 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
 
   const closeMenu = () => setIsMenuOpen(false);
 
-  // 🔥 HELPER FIX: Handle String vs Object Name
+  // 🔥 HELPER: Handle String vs Object Name
   const getProductName = (product: any) => {
     if (!product) return "Unknown";
     // Agar direct string hai (API se)
@@ -119,11 +120,12 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
           <div className={`absolute inset-0 bg-white z-[60] flex flex-col items-center pt-6 px-6 transition-all duration-500 ${
             isSearchOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
           }`}>
-             <div className="w-full max-w-2xl flex items-center border-b border-black/20 pb-4">
+             {/* SEARCH INPUT AREA */}
+             <div className="w-full max-w-4xl flex items-center border-b border-black/10 pb-6 pt-4">
                 {loading ? (
-                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-4"></div>
+                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-6"></div>
                 ) : (
-                   <svg className="text-gray-400 mr-4" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                   <svg className="text-gray-400 mr-6" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 )}
                 
                 <input 
@@ -132,20 +134,24 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
                   placeholder={lang === 'ar' ? "ابحث..." : "Search (e.g. Mint)..."}
-                  className="flex-1 bg-transparent border-none outline-none text-xl font-serif placeholder:text-gray-300 text-black"
+                  className="flex-1 bg-transparent border-none outline-none text-3xl font-serif placeholder:text-gray-200 text-black"
                 />
                 
-                <button onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }} className="ml-4 text-xs font-bold uppercase tracking-widest hover:text-[#D4A373] text-black">
+                <button 
+                  onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }} 
+                  className="ml-6 text-xs font-bold uppercase tracking-widest hover:text-[#D4A373] text-black transition-colors"
+                >
                   CLOSE
                 </button>
              </div>
 
-             {/* RESULTS AREA */}
-             <div className="w-full max-w-2xl mt-6 max-h-[70vh] overflow-y-auto bg-white rounded-lg shadow-xl p-2 border border-gray-100">
+             {/* 🔥 PREMIUM RESULTS AREA */}
+             {/* max-w-4xl makes it wide. no-scrollbar hides scrollbar for clean look */}
+             <div className="w-full max-w-4xl mt-8 max-h-[75vh] overflow-y-auto bg-white rounded-none no-scrollbar pb-20 animate-in fade-in slide-in-from-bottom-2 duration-500">
                 {results.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 pt-4">
                     {results.map((product) => {
-                      // 🔥 SLUG FIX: Check if slug is string or object
+                      // Handle String vs Object logic for slug
                       const slugValue = typeof product.slug === 'string' ? product.slug : product.slug?.current;
 
                       return (
@@ -153,36 +159,59 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
                           key={product._id} 
                           href={`/${lang}/product/${slugValue}`}
                           onClick={() => setIsSearchOpen(false)}
-                          className="flex items-center gap-4 p-3 hover:bg-[#F4F1EA] rounded-lg transition group border-b border-gray-50 last:border-0"
+                          className="flex items-start gap-6 group cursor-pointer"
                         >
-                          <div className="relative w-12 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0 border border-gray-200">
+                          {/* 1. PRODUCT IMAGE (Large Vertical) */}
+                          <div className="relative w-24 h-32 bg-[#F4F1EA] overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-500">
                             {product.image && (
-                              <Image src={urlFor(product.image).url()} alt={getProductName(product)} fill className="object-cover" />
+                              <Image 
+                                src={urlFor(product.image).url()} 
+                                alt={getProductName(product)} 
+                                fill 
+                                className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                              />
                             )}
                           </div>
-                          <div>
-                            <h4 className="font-serif text-sm text-black group-hover:text-[#D4A373] transition font-bold">
-                              {getProductName(product)}
-                            </h4>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {product.price} DHS
-                            </p>
+
+                          {/* 2. PRODUCT DETAILS (Clean Typography) */}
+                          <div className="flex-1 flex flex-col justify-between h-32 py-1">
+                            <div>
+                                <h4 className="font-serif text-xl leading-tight text-black group-hover:text-[#D4A373] transition-colors duration-300">
+                                {getProductName(product)}
+                                </h4>
+                                <p className="text-xs text-gray-400 mt-2 uppercase tracking-wider">
+                                New Collection
+                                </p>
+                            </div>
+                            
+                            <div className="flex items-center justify-between border-t border-gray-100 pt-3 mt-auto">
+                                <p className="text-sm font-bold tracking-widest text-black uppercase">
+                                  {product.price} DHS
+                                </p>
+                                <span className="text-[10px] text-black/60 group-hover:text-black transition-colors uppercase tracking-widest">
+                                  View Product &rarr;
+                                </span>
+                            </div>
                           </div>
                         </Link>
                       );
                     })}
                   </div>
                 ) : (
+                  // EMPTY STATE
                   searchQuery.length >= 2 && !loading && (
-                     <div className="text-center py-10 opacity-60">
-                        <p className="text-sm text-gray-400">No results found for "{searchQuery}"</p>
+                     <div className="flex flex-col items-center justify-center py-24 opacity-50">
+                        <span className="text-5xl mb-4 text-gray-200 font-serif italic">?</span>
+                        <p className="text-lg font-serif text-gray-400">
+                            No matches found for <span className="text-black font-medium">"{searchQuery}"</span>
+                        </p>
                      </div>
                   )
                 )}
              </div>
           </div>
 
-          {/* ... BAAKI KA UI CODE SAME (Copy from previous or leave as is) ... */}
+          {/* ... NORMAL HEADER NAVIGATION (UNCHANGED) ... */}
           
           <div className="flex items-center gap-4 md:hidden">
             <button onClick={() => setIsMenuOpen(true)} className="text-black p-2 -ml-2 hover:bg-white/40 rounded-full transition">
