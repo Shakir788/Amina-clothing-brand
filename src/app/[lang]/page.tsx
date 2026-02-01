@@ -73,7 +73,10 @@ export default async function HomePage({ params }: { params: { lang: string } })
             loop
             playsInline
             preload="auto"
-          >
+            disablePictureInPicture
+            controls={false}
+            
+            >
             <source src="/video.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-white/20 bg-gradient-to-b from-white/30 via-transparent to-[#F4F1EA]" />
