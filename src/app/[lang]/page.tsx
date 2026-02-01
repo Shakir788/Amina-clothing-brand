@@ -6,7 +6,7 @@ import ProductCard from '@/components/product/ProductCard'; // Tera Product Card
 // 1. Translations Logic
 const content = {
   en: {
-    subtitle: "SPRING / SUMMER 2025",
+    subtitle: "SPRING / SUMMER 2026",
     title: "Elegance Redefined",
     description: "Discover the silence of luxury. A collection inspired by the golden dunes and the modern spirit.",
     cta: "View Collection",
@@ -16,7 +16,7 @@ const content = {
     viewAll: "View All Products"
   },
   fr: {
-    subtitle: "PRINTEMPS / ÉTÉ 2025",
+    subtitle: "PRINTEMPS / ÉTÉ 2026",
     title: "L'Élégance Redéfinie",
     description: "Découvrez le silence du luxe. Une collection inspirée par les dunes dorées et l'esprit moderne.",
     cta: "Voir la Collection",
@@ -26,7 +26,7 @@ const content = {
     viewAll: "Voir Tous les Produits"
   },
   ar: {
-    subtitle: "ربيع / صيف 2025",
+    subtitle: "ربيع / صيف 2026",
     title: "أناقة بلا حدود",
     description: "اكتشفي صمت الفخامة. تشكيلة مستوحاة من الكثبان الذهبية والروح العصرية.",
     cta: "تصفح المجموعة",
