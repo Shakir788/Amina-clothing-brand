@@ -1,8 +1,8 @@
 import { client } from "@/sanity/lib/client";
-import ProductCard from "@/components/product/ProductCard"; 
+import ProductGrid from "@/components/product/ProductGrid"; // 👈 Ab hum seedha Grid use karenge
 export const revalidate = 0;
 
-// 1. Translations
+// 1. Translations (UI Texts)
 const translations = {
   en: {
     title: "The Collection",
@@ -20,12 +20,14 @@ const translations = {
 
 // 2. Data Fetching
 async function getProducts() {
-  // 👇 YAHAN THA MISSING PIECE! 'originalPrice' add kar diya
+  // Query same rahegi, kyunki Grid ko saare naam chahiye (en, fr, ar) logic lagane ke liye
   const query = `*[_type == "product"] | order(_createdAt desc) {
     _id,
-    name,
+    name,       // English Name
+    name_fr,    // French Name
+    name_ar,    // Arabic Name
     price,
-    originalPrice, // 👈 YE RAHA JAADU 🪄
+    originalPrice,
     slug,
     image,      
     category->{title}
@@ -42,7 +44,6 @@ export default async function CollectionPage({ params }: { params: { lang: strin
   const isArabic = lang === 'ar';
 
   return (
-    // 👇 THEME: Warm Sand Background (#F4F1EA)
     <div className={`min-h-screen bg-[#F4F1EA] pb-20 ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
       
       {/* HEADER SECTION (Gold & Royal) */}
@@ -67,30 +68,8 @@ export default async function CollectionPage({ params }: { params: { lang: strin
 
       {/* PRODUCTS GRID */}
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-16">
-          
-          {products.map((product: any) => {
-            // 👇 LOGIC FIX: Yahan naam ko filter kar rahe hain language ke hisaab se
-            let localizedName = product.name;
-            
-            // Agar naam Object hai (en, fr, ar), toh sahi wala choose karo
-            if (product.name && typeof product.name === 'object') {
-              localizedName = product.name[lang] || product.name.en || "Unnamed Product";
-            }
-
-            // Product object ko update karke naya object banaya jisme naam string hai
-            const fixedProduct = { ...product, name: localizedName };
-
-            return (
-              <ProductCard 
-                key={product._id} 
-                product={fixedProduct} // Ab isme sahi naam aur originalPrice dono ja rahe hain
-                lang={lang} 
-              />
-            );
-          })}
-
-        </div>
+        {/* 👇 Dekh kitna clean ho gaya! Saara logic ab ProductGrid component ke andar hai */}
+        <ProductGrid products={products} lang={lang} />
       </div>
       
     </div>

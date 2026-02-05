@@ -63,7 +63,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>(""); // Ab ye Hex string store karega
+  const [selectedColor, setSelectedColor] = useState<string>(""); 
   const [openSection, setOpenSection] = useState<string | null>("description");
 
   const { addToCart, toggleCart } = useCart();
@@ -77,6 +77,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        // 👇 Query '...' sab kuch le aayega (name, name_fr, name_ar sab)
         const query = `*[_type == "product" && slug.current == "${params.slug}"][0]{
           ...,
           sizes,
@@ -97,6 +98,22 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   // Helper function to get color hex
   const getColorHex = (col: any) => col.colorHex?.hex || col.colorHex || "";
 
+  // 👇 LOGIC FIX: Lang ke hisaab se sahi naam uthana
+  const getProductName = () => {
+    if (!product) return "Unnamed Product";
+    
+    // Agar Lang FR hai aur name_fr database me hai
+    if (lang === 'fr' && product.name_fr) return product.name_fr;
+    
+    // Agar Lang AR hai aur name_ar database me hai
+    if (lang === 'ar' && product.name_ar) return product.name_ar;
+
+    // Default English
+    return product.name || "Unnamed Product";
+  };
+  
+  const productName = getProductName();
+
   const handleWhatsAppClick = () => {
     if (!product) return;
     
@@ -107,7 +124,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
     const colorText = `Color: ${colorName}`;
 
     const message = `Salam AMINA! I am interested in:
-• Item: ${getProductName()}
+• Item: ${productName}
 • ${sizeText}
 • ${colorText}
 
@@ -116,14 +133,6 @@ Is this available?`;
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
-
-  const getProductName = () => {
-    if (!product?.name) return "Unnamed Product";
-    if (typeof product.name === 'string') return product.name;
-    // @ts-ignore
-    return product.name[lang] || product.name.en || "Unnamed Product";
-  };
-  const productName = getProductName();
 
   const handleAddToCart = () => {
     if(product.sizes?.length > 0 && !selectedSize) {
@@ -333,8 +342,9 @@ function RelatedProducts({ currentSlug, category, lang }: { currentSlug: string,
   const [products, setProducts] = useState<any[]>([]);
   useEffect(() => {
     const fetchRelated = async () => {
+      // 👇 FIX: name_fr aur name_ar bhi mangwaya yahan
       const query = `*[_type == "product" && slug.current != "${currentSlug}"][0...4]{
-        _id, name, slug, price, originalPrice, image, category
+        _id, name, name_fr, name_ar, slug, price, originalPrice, image, category
       }`;
       const data = await client.fetch(query);
       setProducts(data);
@@ -346,9 +356,16 @@ function RelatedProducts({ currentSlug, category, lang }: { currentSlug: string,
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-      {products.map((p) => (
-        <ProductCard key={p._id} product={p} lang={lang} />
-      ))}
+      {products.map((p) => {
+        // 👇 LOGIC FIX: Lang ke hisaab se naam set kiya
+        let localizedName = p.name;
+        if (lang === 'fr' && p.name_fr) localizedName = p.name_fr;
+        else if (lang === 'ar' && p.name_ar) localizedName = p.name_ar;
+
+        const fixedProduct = { ...p, name: localizedName };
+
+        return <ProductCard key={p._id} product={fixedProduct} lang={lang} />;
+      })}
     </div>
   );
 }

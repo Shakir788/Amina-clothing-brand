@@ -4,147 +4,186 @@ export default defineType({
   name: 'product',
   title: 'Product',
   type: 'document',
+  // 1. ✨ TABS (Groups) - Form ko clean rakhne ke liye
+  groups: [
+    {
+      name: 'basic',
+      title: '📝 Basic Info',
+      default: true,
+    },
+    {
+      name: 'media',
+      title: '📸 Images & Colors',
+    },
+    {
+      name: 'translations',
+      title: '🌍 Translations',
+    },
+    {
+      name: 'settings',
+      title: '⚙️ Settings',
+    },
+  ],
   fields: [
+    // --- GROUP 1: BASIC INFO ---
     defineField({
       name: 'name',
       title: 'Product Name (English)',
       type: 'string',
       validation: (rule) => rule.required(),
+      group: 'basic',
     }),
     defineField({
       name: 'slug',
-      title: 'Slug (Unique ID)',
+      title: 'Slug (Unique URL)',
       type: 'slug',
-      options: {
-        source: 'name',
-        maxLength: 96,
-      },
+      options: { source: 'name', maxLength: 96 },
       validation: (rule) => rule.required(),
+      group: 'basic',
     }),
-    
     defineField({
       name: 'price',
-      title: 'Price (Current Selling Price)', 
-      type: 'number', // Changed to number for easier calculation
+      title: 'Price (DHS)',
+      type: 'number',
       validation: (rule) => rule.required(),
+      group: 'basic',
     }),
-
     defineField({
       name: 'originalPrice',
-      title: 'Original Price (For Sale Display)',
-      description: 'Put original price (e.g., 2000). Leave blank if not on sale.',
+      title: 'Original Price (Crossed Out)',
+      description: 'Optional: Use this to show a discount (e.g. 1200)',
       type: 'number',
+      group: 'basic',
     }),
-
-    // 📸 MAIN IMAGE
     defineField({
-      name: 'image',
-      title: 'Main Product Image',
-      type: 'image',
-      options: { hotspot: true },
-      validation: (rule) => rule.required(),
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 3,
+      group: 'basic',
     }),
-
-    // 🎞️ IMAGE GALLERY
-    defineField({
-      name: 'gallery',
-      title: 'Product Gallery',
-      type: 'array',
-      description: 'Add more photos (Back view, fabric zoom, etc.)',
-      of: [{ type: 'image', options: { hotspot: true } }],
-    }),
-
-    // 📏 DYNAMIC SIZE SYSTEM
-    defineField({
-      name: 'sizes',
-      title: 'Available Sizes',
-      type: 'array',
-      description: 'Select only the sizes that are in stock.',
-      of: [{ type: 'string' }],
-      options: {
-        list: [
-          { title: 'S', value: 'S' },
-          { title: 'M', value: 'M' },
-          { title: 'L', value: 'L' },
-          { title: 'XL', value: 'XL' },
-          { title: 'XXL', value: 'XXL' },
-        ],
-      },
-    }),
-
-    // 🎨 DYNAMIC COLOR SYSTEM (Ab asaan hai!)
-    defineField({
-      name: 'colors',
-      title: 'Product Colors',
-      type: 'array',
-      description: 'Add colors. Use the name for label and picker for the actual color.',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { 
-              name: 'colorName', 
-              title: 'Color Name (e.g. Onyx Black)', 
-              type: 'string',
-              validation: (rule) => rule.required(),
-            },
-            { 
-              name: 'colorHex', 
-              title: 'Pick Color', 
-              type: 'color', // 👈 Ye magic hai! Ab dabba khulega select karne ke liye
-              options: {
-                disableAlpha: true // Transparency ki zaroorat nahi
-              }
-            },
-          ],
-          preview: {
-            select: {
-              title: 'colorName',
-              subtitle: 'colorHex.hex'
-            }
-          }
-        },
-      ],
-    }),
-
     defineField({
       name: 'category',
       title: 'Category',
       type: 'string',
       options: {
         list: [
-          { title: 'Collection 2024', value: 'Collection 2024' },
+          { title: 'Collection 2025', value: 'Collection 2025' },
           { title: 'Dresses', value: 'Dresses' },
           { title: 'Sets', value: 'Sets' },
           { title: 'Abayas', value: 'Abayas' },
         ],
       },
-      initialValue: 'Collection 2024',
+      initialValue: 'Collection 2025',
+      group: 'basic',
     }),
 
-    // 🌐 Translations
-    defineField({ name: 'name_ar', title: 'Product Name (Arabic)', type: 'string' }),
-    defineField({ name: 'name_fr', title: 'Product Name (French)', type: 'string' }),
+    // --- GROUP 2: IMAGES & COLORS ---
+    defineField({
+      name: 'image',
+      title: 'Main Cover Image',
+      type: 'image',
+      options: { hotspot: true },
+      validation: (rule) => rule.required(),
+      group: 'media',
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Image Gallery',
+      type: 'array',
+      of: [{ type: 'image', options: { hotspot: true } }],
+      options: { layout: 'grid' }, // 👈 Grid layout se photos saaf dikhengi
+      group: 'media',
+    }),
+    // 🎨 COLOR PICKER (Jo ab kaam karega!)
+    defineField({
+      name: 'colors',
+      title: 'Available Colors',
+      type: 'array',
+      group: 'media',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { 
+              name: 'colorName', 
+              title: 'Color Name', 
+              type: 'string', 
+              initialValue: 'Custom Color' 
+            },
+            { 
+              name: 'colorHex', 
+              title: 'Pick a Color', 
+              type: 'color', // 👈 Plugin ka jaadu yahan chalega
+              options: { disableAlpha: true }
+            },
+          ],
+          preview: {
+            select: {
+              title: 'colorName',
+              subtitle: 'colorHex.hex',
+              media: 'colorHex' // Color ka dabba list mein dikhega
+            }
+          }
+        }
+      ]
+    }),
+    defineField({
+      name: 'sizes',
+      title: 'Sizes',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'XS', value: 'XS' }, { title: 'S', value: 'S' },
+          { title: 'M', value: 'M' }, { title: 'L', value: 'L' },
+          { title: 'XL', value: 'XL' }, { title: 'XXL', value: 'XXL' },
+        ],
+      },
+      group: 'media',
+    }),
 
-    // --- 👇 SELLER SYSTEM FIELDS ---
+    // --- GROUP 3: TRANSLATIONS ---
+    defineField({ name: 'name_fr', title: 'French Name', type: 'string', group: 'translations' }),
+    defineField({ name: 'name_ar', title: 'Arabic Name', type: 'string', group: 'translations' }),
+
+    // --- GROUP 4: SETTINGS ---
     defineField({
       name: 'status',
-      title: 'Product Status',
+      title: 'Status',
       type: 'string',
       options: {
         list: [
-          { title: 'Draft (Seller Uploaded)', value: 'draft' }, 
-          { title: 'Approved (Live on Site)', value: 'approved' }, 
+          { title: 'Draft', value: 'draft' },
+          { title: 'Live', value: 'approved' }
         ],
-        layout: 'radio' 
+        layout: 'radio'
       },
-      initialValue: 'draft', 
+      initialValue: 'draft',
+      group: 'settings',
     }),
-
     defineField({
       name: 'sellerEmail',
       title: 'Seller Email',
       type: 'string',
+      readOnly: true,
+      group: 'settings',
     }),
   ],
+  
+  // 👀 Live Preview in List
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'price',
+      media: 'image',
+    },
+    prepare({ title, subtitle, media }) {
+      return {
+        title: title,
+        subtitle: `${subtitle} DHS`,
+        media: media,
+      }
+    },
+  },
 })
