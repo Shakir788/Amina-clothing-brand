@@ -1,7 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { client } from '@/sanity/lib/client'; // Sanity Client Import
-import ProductCard from '@/components/product/ProductCard'; // Tera Product Card Import
+import { client } from '@/sanity/lib/client'; 
+import ProductCard from '@/components/product/ProductCard'; 
+
+// 👇 MAGIC LINE: Ye purana cache hata degi aur naya data layegi
+export const revalidate = 0;
 
 // 1. Translations Logic
 const content = {
@@ -39,10 +42,12 @@ const content = {
 
 // 2. Data Fetching Function (Server Side)
 async function getLatestProducts() {
-  // Fresh 8 products utha raha hoon
+  // 👇 UPDATE: name_fr aur name_ar bhi mangwaya taaki language change ho sake
   const query = `*[_type == "product"] | order(_createdAt desc)[0...8] {
     _id,
-    name,
+    name,       // English
+    name_fr,    // French
+    name_ar,    // Arabic
     price,
     originalPrice,
     slug,
@@ -54,7 +59,7 @@ async function getLatestProducts() {
 
 // 3. Main Page Component
 export default async function HomePage({ params }: { params: { lang: string } }) {
-  const products = await getLatestProducts(); // Data yahan aayega
+  const products = await getLatestProducts(); 
   
   // @ts-ignore
   const t = content[params.lang] || content.en;
@@ -75,8 +80,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
             preload="auto"
             disablePictureInPicture
             controls={false}
-            
-            >
+          >
             <source src="/video.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-white/20 bg-gradient-to-b from-white/30 via-transparent to-[#F4F1EA]" />
@@ -117,7 +121,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
         </div>
       </section>
 
-      {/* ================= 👇 NEW: LATEST ARRIVALS GRID ================= */}
+      {/* ================= LATEST ARRIVALS GRID ================= */}
       <section className="py-10 px-4 md:px-8 max-w-[1400px] mx-auto bg-[#F4F1EA]">
         
         {/* Section Heading */}
@@ -133,9 +137,24 @@ export default async function HomePage({ params }: { params: { lang: string } })
         {/* Product Grid */}
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10">
-            {products.map((product: any) => (
-              <ProductCard key={product._id} product={product} lang={params.lang} />
-            ))}
+            {products.map((product: any) => {
+              
+              // 👇 LOGIC FIX: Check karo kaunsi language hai aur sahi naam uthao
+              let displayName = product.name; // Default: English
+
+              if (params.lang === 'fr' && product.name_fr) {
+                  displayName = product.name_fr; 
+              } else if (params.lang === 'ar' && product.name_ar) {
+                  displayName = product.name_ar; 
+              }
+
+              // Card ko sahi naam bhej rahe hain
+              const fixedProduct = { ...product, name: displayName };
+
+              return (
+                <ProductCard key={product._id} product={fixedProduct} lang={params.lang} />
+              )
+            })}
           </div>
         ) : (
           <p className="text-center text-gray-400 py-20">Loading luxury pieces...</p>
