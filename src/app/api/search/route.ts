@@ -11,19 +11,23 @@ export async function GET(request: Request) {
   }
 
   try {
+    // 👇 SMART SEARCH QUERY UPDATED
     const query = `*[_type == "product" && (
-      name match $q ||
-      name.en match $q ||
-      name.fr match $q ||
-      name.ar match $q ||
-      category->name.en match $q
-    )] | order(_createdAt desc)[0...5] {
+      name match $q ||           // English Name
+      name_fr match $q ||        // French Name
+      name_ar match $q ||        // Arabic Name
+      category match $q ||       // Category (e.g. Dresses, Abayas)
+      description match $q ||    // ✨ Description (Fabric, style details)
+      colors[].colorName match $q // ✨ Colors (Black, Pink, etc.)
+    )] | order(_createdAt desc)[0...10] {
       _id,
       name,
+      name_fr,
+      name_ar,
       price,
       "slug": slug.current,
       image,
-      category->
+      category
     }`;
 
     // 🔥 CONTAINS SEARCH (order independent)

@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 import ProductCard from '@/components/product/ProductCard'; 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"; // 👈 Good job!
 
 // 1. Translations
 const content = {
@@ -35,16 +35,17 @@ const content = {
 async function getSearchResults(term: string) {
   if (!term || term.trim().length < 2) return [];
 
-
+  // 👇 FIX: Schema ke hisaab se sahi fields match karwaye
   const query = `*[_type == "product" && (
     name match $q || 
-    name.en match $q || 
-    name.fr match $q || 
-    name.ar match $q ||
-    category->name.en match $q
+    name_fr match $q || 
+    name_ar match $q ||
+    category->title match $q
   )] | order(_createdAt desc) {
     _id,
-    name,
+    name,       // English
+    name_fr,    // French
+    name_ar,    // Arabic
     price,
     originalPrice,
     slug,
@@ -52,8 +53,7 @@ async function getSearchResults(term: string) {
     category->
   }`;
 
-  
-  return await client.fetch(query, { q: `${term}*` });
+  return await client.fetch(query, { q: `*${term}*` });
 }
 
 // 3. Main Page Component
@@ -71,15 +71,15 @@ export default async function SearchPage({
   const t = content[params.lang] || content.en;
   const isArabic = params.lang === 'ar';
 
-  // 🔥 FIX 3: Short Query Handling
+  // Short Query Handling
   if (term.length < 2) {
-     return (
-        <div className={`min-h-[60vh] flex flex-col items-center justify-center bg-[#F4F1EA] px-6 text-center ${isArabic ? 'font-arabic' : ''}`}>
+      return (
+        <div className={`min-h-[60vh] flex flex-col items-center justify-center bg-[#F4F1EA] px-6 text-center ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
            <span className="text-4xl block mb-4">⌨️</span>
            <p className="text-xl text-gray-500 font-serif">{t.shortQuery}</p>
            <Link href={`/${params.lang}/collection`} className="mt-6 border-b border-black text-xs font-bold uppercase tracking-widest">{t.back}</Link>
         </div>
-     );
+      );
   }
 
   const products = await getSearchResults(term);
@@ -104,9 +104,17 @@ export default async function SearchPage({
        <div className="max-w-7xl mx-auto">
           {products.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10">
-              {products.map((product: any) => (
-                <ProductCard key={product._id} product={product} lang={params.lang} />
-              ))}
+              {products.map((product: any) => {
+                
+                // 👇 FIX: Language ke hisaab se sahi naam dikhana zaroori hai
+                let displayName = product.name;
+                if (params.lang === 'fr' && product.name_fr) displayName = product.name_fr;
+                else if (params.lang === 'ar' && product.name_ar) displayName = product.name_ar;
+
+                const fixedProduct = { ...product, name: displayName };
+
+                return <ProductCard key={product._id} product={fixedProduct} lang={params.lang} />
+              })}
             </div>
           ) : (
             // EMPTY STATE
