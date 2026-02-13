@@ -15,7 +15,7 @@ export default function LivePreview({ document }: any) {
       </Card>
     )
   }
-  const url = `http://localhost:3000/en/product/${slug}`
+  const url = `http://www.aminaclothing.shop/${slug}`
 
   return (
     <Box style={{ width: '100%', height: '100%' }}>
