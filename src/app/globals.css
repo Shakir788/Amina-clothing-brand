@@ -2,23 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 28, 27, 26;
-  --background-rgb: 249, 247, 242;
+/* =========================================
+   SANITY STUDIO BACKGROUND (VIP LUXURY FIX)
+========================================= */
+
+/* Target entire Studio safely */
+[data-sanity] {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #f8f5f0 0%,
+    #f4efe6 50%,
+    #efe8dc 100%
+  ) !important;
+  z-index: 0;
 }
 
-body {
-  color: theme('colors.amina.black');
-  background: theme('colors.amina.sand');
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 🖼️ Safe background image (Wallpaper) */
+[data-sanity]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("https://images.unsplash.com/photo-1603570419880-0b8e0c7a5b74?q=80&w=2000");
+  background-size: cover;
+  background-position: center;
+  
+  /* 👇 WALLPAPER OPACITY: Ise 0.03 se 0.1 ke beech change karke dekh (Abhi 0.06 hai) */
+  opacity: 0.06; 
+  
+  z-index: -1;
+  pointer-events: none; /* Clicks block nahi honge */
 }
 
-/* Hide Scrollbar Utility */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* 🧊 Pane styling (Glassmorphism Base) */
+[data-sanity] [data-ui="Pane"] {
+  background-color: rgba(255, 255, 255, 0.85) !important; /* Thoda transparent taaki wallpaper dikhe */
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(195, 153, 119, 0.05);
+  margin: 6px; /* Pane ke chaaron taraf thoda space jisse rounded corners chamkein */
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth premium animation */
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+/* 🔥 PANE HOVER EFFECT (Lift & Glow) 🔥 */
+[data-sanity] [data-ui="Pane"]:hover {
+  background-color: rgba(255, 255, 255, 0.98) !important; 
+  box-shadow: 0 12px 35px rgba(195, 153, 119, 0.15) !important; 
+  transform: translateY(-2px); 
+}
+
+
+[data-sanity] button {
+  border-radius: 8px !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+
+[data-sanity] button[data-intent="primary"]:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 18px rgba(195, 153, 119, 0.4) !important; 
+}
+
+
+[data-sanity] button:hover {
+  opacity: 0.85;
 }

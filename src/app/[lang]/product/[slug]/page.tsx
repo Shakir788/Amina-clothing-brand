@@ -77,7 +77,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // 👇 Query '...' sab kuch le aayega (name, name_fr, name_ar sab)
         const query = `*[_type == "product" && slug.current == "${params.slug}"][0]{
           ...,
           sizes,
@@ -86,6 +85,11 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
         }`;
         const data = await client.fetch(query);
         setProduct(data);
+        
+        // Auto-select first color
+        if (data?.colors?.length > 0) {
+          setSelectedColor(data.colors[0]?.colorHex?.hex || data.colors[0]?.colorHex || "");
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -95,36 +99,59 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
     fetchProduct();
   }, [params.slug]);
 
-  // Helper function to get color hex
   const getColorHex = (col: any) => col.colorHex?.hex || col.colorHex || "";
 
-  // 👇 LOGIC FIX: Lang ke hisaab se sahi naam uthana
-  const getProductName = () => {
+  // 1. BASE PRODUCT NAME (Language ke hisab se)
+  const getBaseProductName = () => {
     if (!product) return "Unnamed Product";
-    
-    // Agar Lang FR hai aur name_fr database me hai
     if (lang === 'fr' && product.name_fr) return product.name_fr;
-    
-    // Agar Lang AR hai aur name_ar database me hai
     if (lang === 'ar' && product.name_ar) return product.name_ar;
-
-    // Default English
     return product.name || "Unnamed Product";
   };
-  
-  const productName = getProductName();
+  const baseProductName = getBaseProductName();
+
+  // ✨ ACTIVE COLOR OBJECT DHOONDHO
+  const activeColorObject = product?.colors?.find((c: any) => getColorHex(c) === selectedColor);
+
+  // ✨ 2. DYNAMIC COLOR NAME (Language ke hisab se)
+  const getLocalizedColorName = () => {
+    if (!activeColorObject) return "";
+    if (lang === 'fr' && activeColorObject.colorName_fr) return activeColorObject.colorName_fr;
+    if (lang === 'ar' && activeColorObject.colorName_ar) return activeColorObject.colorName_ar;
+    return activeColorObject.colorName || "";
+  };
+  const activeColorName = getLocalizedColorName();
+
+  // ✨ 3. FINAL PRODUCT NAME (E.g., "Elegant Abaya - Royal Blue")
+  const displayProductName = activeColorName 
+    ? `${baseProductName} - ${activeColorName}` 
+    : baseProductName;
+
+  // ✨ 4. DYNAMIC DESCRIPTION
+  const getLocalizedDescription = () => {
+    if (activeColorObject) {
+      if (lang === 'fr' && activeColorObject.colorDescription_fr) return activeColorObject.colorDescription_fr;
+      if (lang === 'ar' && activeColorObject.colorDescription_ar) return activeColorObject.colorDescription_ar;
+      if (activeColorObject.colorDescription) return activeColorObject.colorDescription;
+    }
+    return product?.description || t.staticDesc;
+  };
+  const displayDescription = getLocalizedDescription();
+
+  // ✨ 5. DYNAMIC IMAGES (Ab ek array ban gaya hai!)
+  const displayImages = activeColorObject?.colorImages?.length > 0 
+    ? activeColorObject.colorImages 
+    : product?.image ? [product.image] : [];
+
 
   const handleWhatsAppClick = () => {
     if (!product) return;
     
-    const colorObj = product.colors?.find((c: any) => getColorHex(c) === selectedColor);
-    const colorName = colorObj ? colorObj.colorName : "Unspecified";
-    
     const sizeText = selectedSize ? `Size: ${selectedSize}` : "Size: Unspecified";
-    const colorText = `Color: ${colorName}`;
+    const colorText = activeColorName ? `Color: ${activeColorName}` : "Color: Unspecified";
 
     const message = `Salam AMINA! I am interested in:
-• Item: ${productName}
+• Item: ${displayProductName}
 • ${sizeText}
 • ${colorText}
 
@@ -140,16 +167,14 @@ Is this available?`;
       return;
     }
     
-    const colorObj = product.colors?.find((c: any) => getColorHex(c) === selectedColor);
-
     addToCart({
       id: product._id,
-      name: productName, 
+      name: displayProductName, // Cart mein bhi full name jayega!
       price: product.price,
-      image: product.image ? urlFor(product.image).url() : "",
+      image: displayImages[0] ? urlFor(displayImages[0]).url() : "", // Cart mein select ki hui pehli photo jayega
       slug: params.slug,
       size: selectedSize, 
-      color: colorObj ? colorObj.colorName : ""
+      color: activeColorName || ""
     });
     toggleCart();
   };
@@ -178,32 +203,30 @@ Is this available?`;
 
   return (
     <div className={`min-h-screen bg-[#F4F1EA] pt-32 pb-20 px-6 ${isArabic ? 'text-right font-sans' : 'text-left'}`} dir={isArabic ? 'rtl' : 'ltr'}>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 relative">
         
-        {/* LEFT: Image Section */}
-        <div className="relative">
-           <div className="sticky top-32">
-              <div className="relative aspect-[3/4] w-full bg-white rounded-t-[100px] rounded-b-2xl overflow-hidden shadow-[0_20px_50px_rgba(212,163,115,0.15)] border border-[#D4A373]/20">
-                {product.image && (
-                  <Image
-                    src={urlFor(product.image).url()}
-                    alt={productName}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-1000"
-                    priority
-                  />
-                )}
-                {hasDiscount && (
+        {/* LEFT: Image Section (Ab yahan multiple photos dikhengi) */}
+        <div className="flex flex-col gap-8">
+            {displayImages.map((img: any, idx: number) => (
+              <div key={img._key || idx} className="relative aspect-[3/4] w-full bg-white rounded-t-[100px] rounded-b-2xl overflow-hidden shadow-[0_20px_50px_rgba(212,163,115,0.15)] border border-[#D4A373]/20">
+                <Image
+                  src={urlFor(img).url()}
+                  alt={`${displayProductName} - View ${idx + 1}`}
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-1000"
+                  priority={idx === 0}
+                />
+                {idx === 0 && hasDiscount && (
                    <div className="absolute top-6 right-6 z-20 bg-[#8C3A3A] text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest">
-                     -{discountPercentage}%
+                      -{discountPercentage}%
                    </div>
                 )}
               </div>
-          </div>
+            ))}
         </div>
 
-        {/* RIGHT: Product Details */}
-        <div className="flex flex-col justify-center animate-in fade-in slide-in-from-bottom-10 duration-700">
+        {/* RIGHT: Product Details (Ye ab STICKY hai, yani screen par ruka rahega jab photo scroll hongi) */}
+        <div className="flex flex-col justify-center animate-in fade-in slide-in-from-bottom-10 duration-700 lg:sticky lg:top-32 h-fit">
           
           <div className="flex items-center gap-4 mb-6">
             <span className="h-px w-8 bg-[#D4A373]"></span>
@@ -213,7 +236,7 @@ Is this available?`;
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#2C2C2C] leading-none mb-6">
-            {productName}
+            {displayProductName} {/* ✨ Yahan naam change hoga */}
           </h1>
 
           <div className="flex items-center gap-4 text-2xl md:text-3xl font-light mb-10">
@@ -241,16 +264,16 @@ Is this available?`;
                     <button
                       key={hex || col.colorName}
                       onClick={() => setSelectedColor(hex)}
-                      className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${selectedColor === hex ? 'border-[#2C2C2C] scale-110' : 'border-transparent hover:scale-110'}`}
-                      style={{ backgroundColor: hex || col.colorName.toLowerCase() }}
+                      className={`w-8 h-8 rounded-full border-2 transition-all duration-300 ${selectedColor === hex ? 'border-[#2C2C2C] scale-110' : 'border-transparent hover:scale-110 shadow-md'}`}
+                      style={{ backgroundColor: hex || col.colorName?.toLowerCase() }}
                       title={col.colorName}
                     />
                   );
                 })}
               </div>
-              {selectedColor && (
-                <p className="text-xs text-gray-400 mt-2">
-                  {product.colors.find((c: any) => getColorHex(c) === selectedColor)?.colorName}
+              {activeColorName && (
+                <p className="text-xs text-gray-400 mt-2 font-medium">
+                  {activeColorName}
                 </p>
               )}
             </div>
@@ -301,7 +324,8 @@ Is this available?`;
                 <span>{openSection === 'description' ? '−' : '+'}</span>
               </button>
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openSection === 'description' ? 'max-h-40 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}>
-                <p className="text-gray-600 font-light leading-relaxed">{product.description || t.staticDesc}</p>
+                {/* ✨ Yahan dynamic description aayega */}
+                <p className="text-gray-600 font-light leading-relaxed">{displayDescription}</p> 
               </div>
             </div>
 
@@ -342,7 +366,6 @@ function RelatedProducts({ currentSlug, category, lang }: { currentSlug: string,
   const [products, setProducts] = useState<any[]>([]);
   useEffect(() => {
     const fetchRelated = async () => {
-      // 👇 FIX: name_fr aur name_ar bhi mangwaya yahan
       const query = `*[_type == "product" && slug.current != "${currentSlug}"][0...4]{
         _id, name, name_fr, name_ar, slug, price, originalPrice, image, category
       }`;
@@ -357,7 +380,6 @@ function RelatedProducts({ currentSlug, category, lang }: { currentSlug: string,
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
       {products.map((p) => {
-        // 👇 LOGIC FIX: Lang ke hisaab se naam set kiya
         let localizedName = p.name;
         if (lang === 'fr' && p.name_fr) localizedName = p.name_fr;
         else if (lang === 'ar' && p.name_ar) localizedName = p.name_ar;

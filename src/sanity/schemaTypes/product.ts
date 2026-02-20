@@ -4,28 +4,17 @@ export default defineType({
   name: 'product',
   title: 'Product',
   type: 'document',
-  // 1. ✨ TABS (Groups) - Form ko clean rakhne ke liye
+  icon: () => '👗', 
+
   groups: [
-    {
-      name: 'basic',
-      title: '📝 Basic Info',
-      default: true,
-    },
-    {
-      name: 'media',
-      title: '📸 Images & Colors',
-    },
-    {
-      name: 'translations',
-      title: '🌍 Translations',
-    },
-    {
-      name: 'settings',
-      title: '⚙️ Settings',
-    },
+    { name: 'basic', title: '📝 Basic Info', default: true },
+    { name: 'media', title: '📸 Images & Colors' },
+    { name: 'translations', title: '🌍 Translations' },
+    { name: 'settings', title: '⚙️ Settings' },
   ],
+
   fields: [
-    // --- GROUP 1: BASIC INFO ---
+    // ---------------- BASIC INFO ----------------
     defineField({
       name: 'name',
       title: 'Product Name (English)',
@@ -33,6 +22,7 @@ export default defineType({
       validation: (rule) => rule.required(),
       group: 'basic',
     }),
+
     defineField({
       name: 'slug',
       title: 'Slug (Unique URL)',
@@ -41,6 +31,7 @@ export default defineType({
       validation: (rule) => rule.required(),
       group: 'basic',
     }),
+
     defineField({
       name: 'price',
       title: 'Price (DHS)',
@@ -48,6 +39,7 @@ export default defineType({
       validation: (rule) => rule.required(),
       group: 'basic',
     }),
+
     defineField({
       name: 'originalPrice',
       title: 'Original Price (Crossed Out)',
@@ -55,13 +47,15 @@ export default defineType({
       type: 'number',
       group: 'basic',
     }),
+
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'General Description (Default)',
       type: 'text',
       rows: 3,
       group: 'basic',
     }),
+
     defineField({
       name: 'category',
       title: 'Category',
@@ -78,56 +72,84 @@ export default defineType({
       group: 'basic',
     }),
 
-    // --- GROUP 2: IMAGES & COLORS ---
+    // ---------------- MEDIA ----------------
     defineField({
       name: 'image',
-      title: 'Main Cover Image',
+      title: 'Main Cover Image (Default)',
       type: 'image',
       options: { hotspot: true },
       validation: (rule) => rule.required(),
       group: 'media',
     }),
+
     defineField({
       name: 'gallery',
-      title: 'Image Gallery',
+      title: 'General Image Gallery',
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
-      options: { layout: 'grid' }, // 👈 Grid layout se photos saaf dikhengi
+      options: { layout: 'grid' },
       group: 'media',
     }),
-    // 🎨 COLOR PICKER (Jo ab kaam karega!)
+
+    // ---------------- COLORS (SMART VIP VERSION) ----------------
     defineField({
       name: 'colors',
-      title: 'Available Colors',
+      title: '🎨 Available Colors (With Photos & Details)',
+      description: 'Add colors, upload specific angle photos, and custom descriptions here.',
       type: 'array',
       group: 'media',
       of: [
         {
           type: 'object',
+          options: {
+            collapsible: true, // Form ko clean rakhne ke liye collapse option
+            collapsed: false,
+          },
+          fieldsets: [
+            { name: 'names', title: 'Color Names', options: { collapsible: true } },
+            { name: 'media', title: 'Images', options: { collapsible: true } },
+            { name: 'desc', title: 'Descriptions', options: { collapsible: true } },
+          ],
           fields: [
-            { 
-              name: 'colorName', 
-              title: 'Color Name', 
-              type: 'string', 
-              initialValue: 'Custom Color' 
-            },
+            // --- NAMES ---
+            { name: 'colorName', title: 'Color Name (English)', type: 'string', fieldset: 'names' },
+            { name: 'colorName_fr', title: 'Color Name (French)', type: 'string', fieldset: 'names' },
+            { name: 'colorName_ar', title: 'Color Name (Arabic)', type: 'string', fieldset: 'names' },
             { 
               name: 'colorHex', 
               title: 'Pick a Color', 
-              type: 'color', // 👈 Plugin ka jaadu yahan chalega
-              options: { disableAlpha: true }
+              type: 'color', 
+              options: { disableAlpha: true }, 
+              fieldset: 'names' 
             },
+
+            // --- IMAGES ---
+            {
+              name: 'colorImages',
+              title: '📸 Images for this Color',
+              type: 'array',
+              of: [{ type: 'image', options: { hotspot: true } }],
+              options: { layout: 'grid' },
+              fieldset: 'media',
+            },
+
+            // --- DESCRIPTIONS ---
+            { name: 'colorDescription', title: 'Description (English)', type: 'text', rows: 2, fieldset: 'desc' },
+            { name: 'colorDescription_fr', title: 'Description (French)', type: 'text', rows: 2, fieldset: 'desc' },
+            { name: 'colorDescription_ar', title: 'Description (Arabic)', type: 'text', rows: 2, fieldset: 'desc' },
           ],
+          // ✨ NAYA: Color box band hone par kaisa dikhega
           preview: {
             select: {
               title: 'colorName',
               subtitle: 'colorHex.hex',
-              media: 'colorHex' // Color ka dabba list mein dikhega
+              media: 'colorImages.0',
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     }),
+
     defineField({
       name: 'sizes',
       title: 'Sizes',
@@ -143,11 +165,11 @@ export default defineType({
       group: 'media',
     }),
 
-    // --- GROUP 3: TRANSLATIONS ---
-    defineField({ name: 'name_fr', title: 'French Name', type: 'string', group: 'translations' }),
-    defineField({ name: 'name_ar', title: 'Arabic Name', type: 'string', group: 'translations' }),
+    // ---------------- TRANSLATIONS ----------------
+    defineField({ name: 'name_fr', title: 'Main Product French Name', type: 'string', group: 'translations' }),
+    defineField({ name: 'name_ar', title: 'Main Product Arabic Name', type: 'string', group: 'translations' }),
 
-    // --- GROUP 4: SETTINGS ---
+    // ---------------- SETTINGS ----------------
     defineField({
       name: 'status',
       title: 'Status',
@@ -155,13 +177,14 @@ export default defineType({
       options: {
         list: [
           { title: 'Draft', value: 'draft' },
-          { title: 'Live', value: 'approved' }
+          { title: 'Live', value: 'approved' },
         ],
-        layout: 'radio'
+        layout: 'radio',
       },
       initialValue: 'draft',
       group: 'settings',
     }),
+
     defineField({
       name: 'sellerEmail',
       title: 'Seller Email',
@@ -170,19 +193,20 @@ export default defineType({
       group: 'settings',
     }),
   ],
+
   
-  // 👀 Live Preview in List
   preview: {
     select: {
       title: 'name',
-      subtitle: 'price',
+      price: 'price',
+      status: 'status',
       media: 'image',
     },
-    prepare({ title, subtitle, media }) {
+    prepare({ title, price, status, media }) {
       return {
-        title: title,
-        subtitle: `${subtitle} DHS`,
-        media: media,
+        title,
+        subtitle: `${price ? price + ' DHS' : 'No Price'} • ${status === 'approved' ? '🟢 Live' : '🟠 Draft'}`,
+        media,
       }
     },
   },
