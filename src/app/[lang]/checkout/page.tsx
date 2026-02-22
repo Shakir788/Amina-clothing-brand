@@ -6,14 +6,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation' 
 
-// ✅ Duaa ka Number (NO CHANGE)
+
 const PHONE_NUMBER = "212723908603"
 
 export default function CheckoutPage() {
   const { items, cartTotal } = useCart()
   const pathname = usePathname()
   
-  // 1. Language Detect (NO CHANGE)
+  
   const currentLang = pathname?.split('/')[1] || 'en'
 
   const [formData, setFormData] = useState({
@@ -23,7 +23,7 @@ export default function CheckoutPage() {
     city: 'Casablanca', 
   })
 
-  // 2. Translations (NO CHANGE)
+ 
   const translations = {
     en: {
       title: "Checkout",
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
       return
     }
 
-    // WhatsApp Message Logic (Exact same as before)
+   
     let message = `*Salam AMINA! New Order:* 🛍️%0a%0a`
     
     items.forEach((item: any) => {
@@ -112,7 +112,7 @@ export default function CheckoutPage() {
   // Empty Cart View
   if (items.length === 0) {
     return (
-      // 👇 THEME UPDATE: Warm Sand Background
+      
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#F4F1EA] text-center px-4">
         <span className="text-5xl text-[#D4A373] mb-4">❦</span>
         <h2 className="text-3xl font-bold mb-4 font-serif text-[#2C2C2C]">{t.emptyCart}</h2>
@@ -124,11 +124,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    // 👇 THEME UPDATE: Page Background #F4F1EA
+    
     <div className={`min-h-screen bg-[#F4F1EA] pt-40 pb-20 px-6 ${isArabic ? 'text-right' : 'text-left'}`} dir={isArabic ? 'rtl' : 'ltr'}>
       <div className="max-w-6xl mx-auto px-4">
         
-        {/* Title with Gold Accent */}
+        {}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold font-serif text-[#2C2C2C] mb-2">{t.title}</h1>
           <div className="w-16 h-[2px] bg-[#D4A373]/40 mx-auto"></div>
@@ -136,7 +136,7 @@ export default function CheckoutPage() {
 
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
           
-          {/* LEFT SIDE: Form (Styled Transparent/Gold) */}
+          {}
           <div className="bg-white/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl border border-[#D4A373]/20 shadow-sm">
             <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C] flex items-center gap-2">
               {t.shippingHeader}
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* RIGHT SIDE: Order Summary (Styled Luxury Bill) */}
+          {}
           <div>
             <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C]">{t.orderHeader}</h2>
             <div className="bg-white border border-[#D4A373]/20 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
@@ -201,7 +201,7 @@ export default function CheckoutPage() {
                 {items.map((item: any) => (
                   <div key={item.id} className="flex gap-5 border-b border-[#F4F1EA] pb-6 last:border-0">
                     
-                    {/* 👇 THEME: Image with Arch Shape */}
+                    {}
                     <div className="w-20 h-24 relative bg-[#F4F1EA] rounded-t-xl rounded-b-md overflow-hidden flex-shrink-0 border border-[#D4A373]/20">
                       {item.image && (
                         <Image src={item.image} alt={item.name} fill className="object-cover" />
@@ -233,13 +233,13 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              {/* WHATSAPP BUTTON (Kept Green for Recognition, but styled better) */}
+              {}
               <button 
   onClick={handleWhatsAppOrder}
   className="w-full bg-[#1a1a1a] hover:bg-[#D4A373] text-white font-bold py-4 px-6 rounded-xl mt-8 flex items-center justify-center gap-3 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
 >
   <span className="uppercase tracking-widest text-xs">{t.confirmBtn}</span>
-  {/* WhatsApp Icon (Green color inside) */}
+  {}
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#25D366" viewBox="0 0 16 16">
     <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/>
   </svg>

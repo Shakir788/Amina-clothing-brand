@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client';
 import ProductCard from '@/components/product/ProductCard'; 
-export const dynamic = "force-dynamic"; // 👈 Good job!
+export const dynamic = "force-dynamic"; 
 
 // 1. Translations
 const content = {
@@ -35,7 +35,6 @@ const content = {
 async function getSearchResults(term: string) {
   if (!term || term.trim().length < 2) return [];
 
-  // 👇 FIX: Schema ke hisaab se sahi fields match karwaye
   const query = `*[_type == "product" && (
     name match $q || 
     name_fr match $q || 

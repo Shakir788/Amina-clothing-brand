@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { client } from '@/sanity/lib/client'; 
 import ProductCard from '@/components/product/ProductCard'; 
 
-// 👇 MAGIC LINE: Ye purana cache hata degi aur naya data layegi
+
 export const revalidate = 0;
 
 // 1. Translations Logic
@@ -42,7 +42,7 @@ const content = {
 
 // 2. Data Fetching Function (Server Side)
 async function getLatestProducts() {
-  // 👇 UPDATE: name_fr aur name_ar bhi mangwaya taaki language change ho sake
+  
   const query = `*[_type == "product"] | order(_createdAt desc)[0...8] {
     _id,
     name,       // English
@@ -139,7 +139,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10">
             {products.map((product: any) => {
               
-              // 👇 LOGIC FIX: Check karo kaunsi language hai aur sahi naam uthao
+              
               let displayName = product.name; // Default: English
 
               if (params.lang === 'fr' && product.name_fr) {
@@ -148,7 +148,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
                   displayName = product.name_ar; 
               }
 
-              // Card ko sahi naam bhej rahe hain
+              
               const fixedProduct = { ...product, name: displayName };
 
               return (

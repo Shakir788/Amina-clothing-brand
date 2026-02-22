@@ -31,6 +31,6 @@ export function middleware(request: any) {
 }
 
 export const config = {
-  // 👇 UPDATED MATCHER: Ab ye videos ko translate nahi karega
+ 
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|images|.*\\.mp4$|.*\\.mov$).*)'],
 }

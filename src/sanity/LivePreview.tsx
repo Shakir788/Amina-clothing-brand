@@ -1,5 +1,3 @@
-// src/sanity/LivePreview.tsx
-
 import { Box, Card, Text } from '@sanity/ui'
 
 export default function LivePreview({ document }: any) {
@@ -20,7 +18,7 @@ export default function LivePreview({ document }: any) {
     ? 'http://localhost:3000'
     : 'https://www.aminaclothing.shop'
 
-  // 👇 FIX: Maine yahan '/en/product/' jod diya hai
+  
   const url = `${websiteUrl}/en/product/${slug}`
 
   return (
