@@ -9,22 +9,19 @@ import { useCart } from '@/context/CartContext';
 
 export default function AIChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false); // 👈 NEW: Bubble state
+  const [showWelcome, setShowWelcome] = useState(false);
   const { addToCart, toggleCart } = useCart();
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
   
-  // 👇 NEW: Audio Ref for Notification Sound
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // 👇 UPDATE: Pura Salam in Arabic
+  // Pura Salam in Arabic
   const welcomeMessages: Record<string, string> = {
     en: "Hello! 👋 I am Amina, your personal stylist. Looking for a Kaftan for a wedding or something casual?",
     fr: "Bonjour ! 👋 Je suis Amina, votre styliste personnelle. Cherchez-vous un Caftan pour un mariage ?",
     ar: "السلام عليكم! 👋 أنا أمينة، مستشارة الأزياء الخاصة بك. هل تبحثين عن قفطان للمناسبات أو ملابس يومية؟",
   };
 
-  // 👇 Short Bubble Text (Jo bahar dikhega)
+  // Short Bubble Text
   const bubbleText: Record<string, string> = {
     en: "Hi there! 👋 Need help?",
     fr: "Salut ! 👋 Besoin d'aide ?",
@@ -43,22 +40,18 @@ export default function AIChatBot() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 👇 1. NEW LOGIC: 4 Second baad Bubble + Sound
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isOpen) {
         setShowWelcome(true);
-        // Play Sound from Link
-        if (audioRef.current) {
-          audioRef.current.play().catch(e => console.log("Audio autoplay blocked by browser", e));
-        }
       }
-    }, 4000); // 4 Seconds delay
+    }, 4000); 
 
     return () => clearTimeout(timer);
   }, [isOpen]);
 
-  // 👇 2. EXISTING LOGIC: "Add to Cart" Handling (NO CHANGE)
+  // 2. EXISTING LOGIC: "Add to Cart" Handling 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === 'assistant' && lastMessage.content.includes("[ACTION_ADD_TO_CART:")) {
@@ -83,14 +76,14 @@ export default function AIChatBot() {
     }
   }, [messages, addToCart, toggleCart]); 
 
-  // Auto Scroll (Existing)
+  // Auto Scroll 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isLoading, isOpen]);
 
-  // Message Renderer (Existing - Safe)
+  // Message Renderer 
   const renderMessageContent = (content: string) => {
     let cleanContent = content.replace(/\[ACTION_ADD_TO_CART:(.*?)\]/g, "");
 
@@ -125,13 +118,10 @@ export default function AIChatBot() {
 
   return (
     <>
-      {/* 👇 HIDDEN AUDIO PLAYER (Using online link) */}
-      <audio ref={audioRef} src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto" />
-
       {/* Floating Wrapper */}
       <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 ${lang === 'ar' ? 'items-start left-6 right-auto' : ''}`}>
         
-        {/* 👇 NEW: WELCOME BUBBLE (Animation ke sath) */}
+        {/* SILENT WELCOME BUBBLE */}
         {showWelcome && !isOpen && (
           <div className="animate-bounce mb-2 relative">
              <div 
@@ -159,20 +149,20 @@ export default function AIChatBot() {
         >
           <div className="bg-black text-white p-4 rounded-full shadow-2xl border border-[#D4A373]/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 rounded-full"></div>
-             {/* Notification Dot if bubble is hidden but chat not opened */}
+             {/* Notification Dot */}
              {!isOpen && !showWelcome && (
                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border border-black rounded-full animate-pulse z-20"></span>
              )}
              <span className="text-2xl relative z-10">✨</span>
           </div>
-          {/* Label (Desktop Only) */}
+          {/* Label */}
           <span className="bg-white px-4 py-2 rounded-full shadow-lg text-xs font-bold tracking-[0.2em] text-black border border-gray-100 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-4 group-hover:translate-x-0">
             STYLIST
           </span>
         </button>
       </div>
 
-      {/* Chat Window (Existing UI) */}
+      {/* Chat Window */}
       <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0 pointer-events-none'}`}>
         <div className="w-[90vw] md:w-[380px] h-[600px] max-h-[80vh] bg-[#F9F9F9]/95 backdrop-blur-md border border-white/50 shadow-2xl rounded-[2rem] flex flex-col overflow-hidden relative">
           

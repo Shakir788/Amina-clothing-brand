@@ -20,14 +20,12 @@ function shuffleArray(array: any[]) {
 }
 
 export async function POST(req: Request) {
-  // 👇 Safety Belt: Try-Catch Block add kiya hai
   try {
     const { messages } = await req.json();
 
     // 1. Fetch products
     let products = await getProducts();
 
-    // Console Log taaki Terminal me dikhe data aa raha hai ya nahi
     console.log('🔥 AI Products Found:', products?.length || 0);
 
     // Safety: no products = empty array
@@ -106,11 +104,11 @@ export async function POST(req: Request) {
 
     // 5. Call AI (Requested Model)
     const response = await openai.chat.completions.create({
-      model: 'tngtech/deepseek-r1t2-chimera:free', // 👈 Tera pasandeeda model
+      model: 'arcee-ai/trinity-large-preview:free',
       stream: true,
       temperature: 0.4,
       top_p: 0.9,
-      max_tokens: 400, // 👈 Badha diya taaki JSON na kate
+      max_tokens: 400, 
       frequency_penalty: 0.4,
       presence_penalty: 0.3,
       messages: [
@@ -123,7 +121,7 @@ export async function POST(req: Request) {
     return new StreamingTextResponse(stream);
 
   } catch (error) {
-    // 👇 Agar error aaye to server crash nahi hoga, bas console me dikhega
+    
     console.error("❌ AI Error:", error);
     return new Response("Amina is currently offline. Please try again later.", { status: 503 });
   }

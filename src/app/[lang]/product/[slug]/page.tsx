@@ -10,7 +10,7 @@ import ProductCard from "@/components/product/ProductCard";
 // 🌍 Translations
 const translations = {
   en: {
-    collection: "SPRING / SUMMER 2025",
+    collection: "SPRING / SUMMER 2026",
     addToBag: "ADD TO SHOPPING BAG",
     orderWhatsApp: "ORDER VIA WHATSAPP",
     selectSize: "Select Size",
@@ -26,7 +26,7 @@ const translations = {
     staticShip: "Complimentary delivery in Casablanca. Returns accepted within 7 days of purchase."
   },
   fr: {
-    collection: "PRINTEMPS / ÉTÉ 2025",
+    collection: "PRINTEMPS / ÉTÉ 2026",
     addToBag: "AJOUTER AU PANIER",
     orderWhatsApp: "COMMANDER VIA WHATSAPP",
     selectSize: "Choisir la Taille",
@@ -42,7 +42,7 @@ const translations = {
     staticShip: "Livraison offerte à Casablanca. Retours acceptés sous 7 jours."
   },
   ar: {
-    collection: "ربيع / صيف 2025",
+    collection: "ربيع / صيف 2026",
     addToBag: "أضف إلى حقيبة التسوق",
     orderWhatsApp: "اطلب عبر الواتساب",
     selectSize: "اختر المقاس",
@@ -101,7 +101,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
 
   useEffect(() => {
     setCurrentImageIndex(0);
-    setIsModalZoomed(false); // Color change pe zoom reset
+    setIsModalZoomed(false); 
   }, [selectedColor]);
 
   const getColorHex = (col: any) => col.colorHex?.hex || col.colorHex || "";
@@ -294,8 +294,8 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
         <div 
           className={`fixed inset-0 z-[100] bg-white/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10 ${isModalZoomed ? 'overflow-auto items-start justify-start cursor-zoom-out' : 'cursor-zoom-in'}`}
           onClick={() => {
-            if (isModalZoomed) setIsModalZoomed(false); // Zoomed in hai toh zoom out karo
-            else setIsZoomModalOpen(false); // Normal hai toh close kardo
+            if (isModalZoomed) setIsModalZoomed(false); 
+            else setIsZoomModalOpen(false); 
           }}
         >
           {/* Close Button */}
@@ -310,8 +310,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
             className={`relative transition-all duration-300 ease-in-out ${isModalZoomed ? 'w-[150%] h-[150%] md:w-[200%] md:h-[200%] flex-shrink-0' : 'w-full h-full max-w-5xl max-h-[90vh]'}`}
             onClick={(e) => { 
               e.stopPropagation(); 
-              if (!isModalZoomed) setIsModalZoomed(true); // Normal pe click kiya toh bada karo
-              else setIsModalZoomed(false);
+              if (!isModalZoomed) setIsModalZoomed(true); 
             }}
           >
             <Image

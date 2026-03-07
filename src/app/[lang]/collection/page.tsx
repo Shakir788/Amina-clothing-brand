@@ -12,7 +12,7 @@ const translations = {
 
 async function getProducts(category?: string, sort?: string) {
   let query = `*[_type == "product"`;
-  if (category && category !== "Collection 2025") {
+  if (category && category !== "Collection 2026") {
     query += ` && category == "${category}"`;
   }
   query += `]`;
