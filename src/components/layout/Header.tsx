@@ -78,8 +78,11 @@ export default function Header({ lang, dict }: { lang: string, dict: any }) {
           </div>
 
           {/* LOGO */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 text-center w-1/3 flex justify-center">
-            <Link href={`/${lang}`} className="text-2xl md:text-3xl font-serif font-bold tracking-widest text-black hover:opacity-80 transition drop-shadow-sm">AMINA</Link>
+          {/* Absolute Centered Logo */}
+          <div className="absolute left-[35%] md:left-1/2 transform -translate-x-1/2 text-center flex justify-center z-10">
+            <Link href={`/${lang}`} className="text-2xl md:text-3xl font-serif font-bold tracking-widest text-black hover:opacity-80 transition drop-shadow-sm">
+              AMINA
+            </Link>
           </div>
 
           {/* ICONS SECTION (Right Side) */}
