@@ -22,6 +22,7 @@ const amiri = Amiri({
 export const metadata: Metadata = {
   title: "AMINA | Luxury Moroccan Fashion",
   description: "Discover the elegance of modern Moroccan Kaftans and Dresses.",
+  manifest: "/manifest.json",
 };
 
 export default async function RootLayout({
