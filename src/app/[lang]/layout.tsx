@@ -56,6 +56,8 @@ export default async function RootLayout({
           </Script>
           {/* ✅ META PIXEL END */}
 
+        <link rel="manifest" href="/manifest.json" />
+
           <CartProvider>
             <Header lang={params.lang} dict={dict.header} />
 
