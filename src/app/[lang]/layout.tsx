@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 import { getDictionary } from "@/lib/getDictionary";
 import { ClerkProvider } from "@clerk/nextjs";
 import Script from "next/script"; // ✅ Meta Pixel ke liye
+import SplashScreen from "@/components/SplashScreen";
 
 // Fonts setup
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -58,14 +59,15 @@ export default async function RootLayout({
           {/* ✅ META PIXEL END */}
 
           <CartProvider>
-            <Header lang={params.lang} dict={dict.header} />
-
-            {children}
-
-            <Footer lang={params.lang} />
-
-            <CartSidebar />
-            <AIChatBot />
+            {/* 👇 Yahan se SplashScreen shuru */}
+            <SplashScreen>
+              <Header lang={params.lang} dict={dict.header} />
+              {children}
+              <Footer lang={params.lang} />
+              <CartSidebar />
+              <AIChatBot />
+            </SplashScreen>
+            {}
           </CartProvider>
         </body>
       </html>

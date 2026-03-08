@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "shop.aminaclothing.twa",
+        "sha256_cert_fingerprints": ["E6:D3:06:E5:2D:A4:C5:47:A1:39:6C:92:08:31:52:2B:5B:70:E1:ED:DF:49:BB:B7:A6:82:EA:06:13:04:54:FD"]
+      }
+    }]
