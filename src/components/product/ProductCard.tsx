@@ -24,6 +24,15 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
   
+  // ✨ VIP Translations for Stock Status
+  const statusLabels: any = {
+    en: { soldOut: "Sold Out", outOfStock: "Out of Stock" },
+    fr: { soldOut: "Épuisé", outOfStock: "Rupture de stock" },
+    ar: { soldOut: "نفدت الكمية", outOfStock: "نفدت الكمية" }
+  };
+
+  const tStatus = statusLabels[lang] || statusLabels.en;
+
   const getProductName = () => {
     if (!product.name) return "Unnamed Product";
     if (typeof product.name === 'string') return product.name;
@@ -38,7 +47,6 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
   const oldPrice = product.originalPrice ? Number(product.originalPrice) : null;
   const isOutOfStock = product.inStock === false;
 
-  
   const hasDiscount = oldPrice && oldPrice > currentPrice && !isOutOfStock;
 
   // ✨ Exact Round Figure for Discount
@@ -61,16 +69,16 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
           
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500 z-10" />
 
-          {/* 🚫 VIP SOLD OUT OVERLAY (Glass Effect) */}
+          {/* 🚫 VIP SOLD OUT OVERLAY (Dynamic Language) */}
           {isOutOfStock && (
             <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-30 flex items-center justify-center">
               <span className="bg-[#2C2C2C] text-white text-[10px] uppercase tracking-[0.2em] px-4 py-2 font-bold shadow-xl">
-                Sold Out
+                {tStatus.soldOut}
               </span>
             </div>
           )}
 
-          {/* 🏷️ Top Right Badge (Image par - Sirf tab jab stock ho) */}
+          {/* 🏷️ Discount Badge (Sirf tab jab stock ho) */}
           {hasDiscount && (
             <div className="absolute top-4 right-4 z-20 bg-[#8C3A3A] text-white text-[9px] font-bold px-3 py-1 rounded-full shadow-lg border border-[#D4A373]/30">
               -{discountPercentage}%
@@ -101,9 +109,8 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
           {/* 💸 Price Section */}
           <div className="flex items-center justify-center gap-2 mt-1">
             {isOutOfStock ? (
-          
               <span className="text-[#8C3A3A] font-bold text-xs uppercase tracking-widest mt-1">
-                Out of Stock
+                {tStatus.outOfStock}
               </span>
             ) : hasDiscount ? (
               <>
