@@ -8,7 +8,7 @@ import {apiVersion, dataset, projectId} from './src/sanity/env'
 import {schema} from './src/sanity/schemaTypes'
 import {structure} from './src/sanity/structure'
 import { myTheme } from './src/sanity/theme' 
-import React from 'react' // 👈 Ye line bahut zaroori hai
+import React from 'react' 
 
 export default defineConfig({
   basePath: '/studio',
@@ -34,7 +34,7 @@ export default defineConfig({
         return React.createElement(
           React.Fragment,
           null,
-          // 👇 Seedha CSS Inject kar rahe hain jo Sanity ko override karegi
+          
           React.createElement(
             'style',
             null,

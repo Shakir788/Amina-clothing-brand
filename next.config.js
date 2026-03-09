@@ -8,7 +8,7 @@ const nextConfig = {
       },
        {
         protocol: 'https',
-        hostname: 'images.unsplash.com', // 👈 Ye Fake Data wali images ke liye (optional)
+        hostname: 'images.unsplash.com', 
       },
     ],
   },

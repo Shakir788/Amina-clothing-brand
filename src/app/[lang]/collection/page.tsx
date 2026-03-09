@@ -20,8 +20,9 @@ async function getProducts(category?: string, sort?: string) {
   if (sort === "price_asc") query += ` | order(price asc)`;
   else if (sort === "price_desc") query += ` | order(price desc)`;
   else query += ` | order(_createdAt desc)`;
-
-  query += `{ _id, name, name_fr, name_ar, price, originalPrice, slug, image, category }`;
+  
+  query += `{ _id, name, name_fr, name_ar, price, originalPrice, slug, image, category, inStock }`;
+  
   return await client.fetch(query);
 }
 
