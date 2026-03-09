@@ -6,13 +6,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation' 
 
-
 const PHONE_NUMBER = "212723908603"
 
 export default function CheckoutPage() {
   const { items, cartTotal } = useCart()
   const pathname = usePathname()
-  
   
   const currentLang = pathname?.split('/')[1] || 'en'
 
@@ -23,7 +21,9 @@ export default function CheckoutPage() {
     city: 'Casablanca', 
   })
 
- 
+  // ✨ NAYA: Loading aur Button Disable karne ke liye
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const translations = {
     en: {
       title: "Checkout",
@@ -36,6 +36,7 @@ export default function CheckoutPage() {
       subtotal: "Subtotal",
       total: "Total",
       confirmBtn: "Confirm Order on WhatsApp",
+      processingBtn: "Processing Order...", // Naya translation
       emptyCart: "Your Cart is Empty 😔",
       goShop: "Go Shopping",
       shippingNote: "*Shipping charges may apply based on your city.",
@@ -52,6 +53,7 @@ export default function CheckoutPage() {
       subtotal: "Sous-total",
       total: "Total",
       confirmBtn: "Confirmer sur WhatsApp",
+      processingBtn: "Traitement en cours...", // Naya translation
       emptyCart: "Votre panier est vide 😔",
       goShop: "Aller à la boutique",
       shippingNote: "*Des frais de livraison peuvent s'appliquer selon votre ville.",
@@ -68,6 +70,7 @@ export default function CheckoutPage() {
       subtotal: "المجموع الفرعي",
       total: "المجموع",
       confirmBtn: "تأكيد الطلب عبر واتساب",
+      processingBtn: "جاري المعالجة...", // Naya translation
       emptyCart: "عربة التسوق فارغة 😔",
       goShop: "اذهب للتسوق",
       shippingNote: "*قد يتم تطبيق رسوم الشحن حسب مدينتك.",
@@ -79,40 +82,72 @@ export default function CheckoutPage() {
   const t = translations[currentLang] || translations.en
   const isArabic = currentLang === 'ar'
 
-  // Logic Handlers (NO CHANGE)
+  // Logic Handlers
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleWhatsAppOrder = () => {
+  // ✨ NAYA: Asli VIP Order Function (Sanity + WhatsApp)
+  const handleWhatsAppOrder = async () => {
     if (!formData.name || !formData.address || !formData.phone) {
-      alert(currentLang === 'fr' ? "Veuillez remplir tous les détails" : "Please fill in all details")
+      alert(currentLang === 'fr' ? "Veuillez remplir tous les détails" : (currentLang === 'ar' ? "يرجى ملء جميع التفاصيل" : "Please fill in all details"))
       return
     }
 
-   
-    let message = `*Salam AMINA! New Order:* 🛍️%0a%0a`
-    
-    items.forEach((item: any) => {
-      message += `▪️ ${item.name} (x${item.quantity}) - ${item.price * item.quantity} DHS%0a`
-    })
+    setIsSubmitting(true); // Button ko loading me dalo
 
-    message += `%0a*Total: ${cartTotal} DHS* 💰%0a`
-    message += `------------------%0a`
-    message += `*Customer:*%0a`
-    message += `👤 ${formData.name}%0a`
-    message += `📞 ${formData.phone}%0a`
-    message += `📍 ${formData.address}, ${formData.city}%0a`
-    
-    const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${message}`
-    window.open(whatsappUrl, '_blank')
+    try {
+      // 1. Backend API ko data bhejo
+      const response = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: formData.name,
+          phone: formData.phone,
+          city: formData.city,
+          address: formData.address,
+          cartItems: items,
+          totalPrice: cartTotal,
+        }),
+      });
+
+      const data = await response.json();
+
+      // 2. WhatsApp Message Banao
+      let message = `*Salam AMINA! New Order:* 🛍️%0a%0a`
+      
+      // Agar Sanity me save ho gaya toh VIP Order ID add kardo
+      if (data.success && data.orderNumber) {
+        message += `*Order ID:* ${data.orderNumber}%0a%0a`
+      }
+      
+      items.forEach((item: any) => {
+        message += `▪️ ${item.name} (x${item.quantity}) - ${item.price * item.quantity} DHS%0a`
+      })
+
+      message += `%0a*Total: ${cartTotal} DHS* 💰%0a`
+      message += `------------------%0a`
+      message += `*Customer:*%0a`
+      message += `👤 ${formData.name}%0a`
+      message += `📞 ${formData.phone}%0a`
+      message += `📍 ${formData.address}, ${formData.city}%0a`
+      
+      // WhatsApp Open Karo
+      const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${message}`
+      window.open(whatsappUrl, '_blank')
+
+    } catch (error) {
+      console.error("Order process failed:", error);
+      alert(currentLang === 'fr' ? "Une erreur s'est produite. Veuillez réessayer." : (currentLang === 'ar' ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
+    } finally {
+      setIsSubmitting(false); // Loading band karo
+    }
   }
 
   // Empty Cart View
   if (items.length === 0) {
     return (
-      
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#F4F1EA] text-center px-4">
         <span className="text-5xl text-[#D4A373] mb-4">❦</span>
         <h2 className="text-3xl font-bold mb-4 font-serif text-[#2C2C2C]">{t.emptyCart}</h2>
@@ -124,11 +159,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    
     <div className={`min-h-screen bg-[#F4F1EA] pt-40 pb-20 px-6 ${isArabic ? 'text-right' : 'text-left'}`} dir={isArabic ? 'rtl' : 'ltr'}>
       <div className="max-w-6xl mx-auto px-4">
         
-        {}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-5xl font-bold font-serif text-[#2C2C2C] mb-2">{t.title}</h1>
           <div className="w-16 h-[2px] bg-[#D4A373]/40 mx-auto"></div>
@@ -136,7 +169,6 @@ export default function CheckoutPage() {
 
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
           
-          {}
           <div className="bg-white/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl border border-[#D4A373]/20 shadow-sm">
             <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C] flex items-center gap-2">
               {t.shippingHeader}
@@ -175,7 +207,6 @@ export default function CheckoutPage() {
                     <option value="Fes">Fes</option>
                     <option value="Other">Other</option>
                   </select>
-                  {/* Custom Arrow for Select */}
                   <div className={`absolute top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 ${isArabic ? 'left-4' : 'right-4'}`}>▼</div>
                 </div>
               </div>
@@ -190,24 +221,19 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {}
           <div>
             <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C]">{t.orderHeader}</h2>
             <div className="bg-white border border-[#D4A373]/20 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
-              {/* Decorative Top Line */}
               <div className="absolute top-0 left-0 w-full h-1 bg-[#D4A373]"></div>
 
               <div className="space-y-6 max-h-[400px] overflow-y-auto mb-6 pr-2 custom-scrollbar">
                 {items.map((item: any) => (
                   <div key={item.id} className="flex gap-5 border-b border-[#F4F1EA] pb-6 last:border-0">
-                    
-                    {}
                     <div className="w-20 h-24 relative bg-[#F4F1EA] rounded-t-xl rounded-b-md overflow-hidden flex-shrink-0 border border-[#D4A373]/20">
                       {item.image && (
                         <Image src={item.image} alt={item.name} fill className="object-cover" />
                       )}
                     </div>
-                    
                     <div className="flex-1 flex flex-col justify-center">
                       <h3 className="font-medium text-[#2C2C2C] font-serif text-lg leading-tight">{item.name}</h3>
                       <div className="flex justify-between items-center mt-2">
@@ -233,17 +259,26 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              {}
+              {/* ✨ NAYA: Disable Button on Submit ✨ */}
               <button 
-  onClick={handleWhatsAppOrder}
-  className="w-full bg-[#1a1a1a] hover:bg-[#D4A373] text-white font-bold py-4 px-6 rounded-xl mt-8 flex items-center justify-center gap-3 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
->
-  <span className="uppercase tracking-widest text-xs">{t.confirmBtn}</span>
-  {}
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#25D366" viewBox="0 0 16 16">
-    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/>
-  </svg>
-</button>
+                onClick={handleWhatsAppOrder}
+                disabled={isSubmitting}
+                className={`w-full font-bold py-4 px-6 rounded-xl mt-8 flex items-center justify-center gap-3 transition-all shadow-lg ${
+                  isSubmitting 
+                    ? 'bg-gray-400 text-white cursor-not-allowed opacity-70' 
+                    : 'bg-[#1a1a1a] hover:bg-[#D4A373] hover:shadow-xl hover:-translate-y-1 text-white'
+                }`}
+              >
+                <span className="uppercase tracking-widest text-xs">
+                  {isSubmitting ? t.processingBtn : t.confirmBtn}
+                </span>
+                
+                {!isSubmitting && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#25D366" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/>
+                  </svg>
+                )}
+              </button>
               <p className="text-center text-[10px] text-gray-400 mt-4 opacity-70 uppercase tracking-widest">{t.redirectNote}</p>
             </div>
           </div>

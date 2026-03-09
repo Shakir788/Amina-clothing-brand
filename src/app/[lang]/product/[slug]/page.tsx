@@ -12,6 +12,7 @@ const translations = {
   en: {
     collection: "SPRING / SUMMER 2026",
     addToBag: "ADD TO SHOPPING BAG",
+    outOfStock: "OUT OF STOCK", 
     orderWhatsApp: "ORDER VIA WHATSAPP",
     selectSize: "Select Size",
     selectColor: "Select Color",
@@ -28,6 +29,7 @@ const translations = {
   fr: {
     collection: "PRINTEMPS / ÉTÉ 2026",
     addToBag: "AJOUTER AU PANIER",
+    outOfStock: "RUPTURE DE STOCK", 
     orderWhatsApp: "COMMANDER VIA WHATSAPP",
     selectSize: "Choisir la Taille",
     selectColor: "Choisir la Couleur",
@@ -44,6 +46,7 @@ const translations = {
   ar: {
     collection: "ربيع / صيف 2026",
     addToBag: "أضف إلى حقيبة التسوق",
+    outOfStock: "نفدت الكمية",
     orderWhatsApp: "اطلب عبر الواتساب",
     selectSize: "اختر المقاس",
     selectColor: "اختر اللون",
@@ -87,7 +90,8 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
           ...,
           sizes,
           colors,
-          originalPrice
+          originalPrice,
+          inStock // ✨ NAYA: In-stock status database se lana hai
         }`;
         const data = await client.fetch(query);
         setProduct(data);
@@ -143,10 +147,15 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#F4F1EA]"><div className="animate-pulse text-[#D4A373] font-serif text-xl tracking-widest">{t.loading}</div></div>;
   if (!product) return <div className="h-screen flex items-center justify-center bg-[#F4F1EA] text-gray-500 font-serif">{t.notFound}</div>;
 
-  const categoryValue = product.category?.en || product.category || "Collection 2025";
+  const categoryValue = product.category?.en || product.category || "Collection 2026";
   const currentPrice = Number(product.price);
   const oldPrice = Number(product.originalPrice);
-  const hasDiscount = oldPrice && oldPrice > currentPrice;
+  
+  // ✨ NAYA: Stock check
+  const isOutOfStock = product.inStock === false;
+  
+  // Discount tabhi dikhao jab original price ho, aur product stock me ho
+  const hasDiscount = oldPrice && oldPrice > currentPrice && !isOutOfStock;
   const discountPercentage = hasDiscount ? Math.round(((oldPrice - currentPrice) / oldPrice) * 100) : 0;
 
   return (
@@ -160,18 +169,27 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
               className="relative w-full max-w-[420px] aspect-[3/4] bg-white rounded-t-[100px] rounded-b-2xl overflow-hidden shadow-[0_20px_50px_rgba(212,163,115,0.15)] border border-[#D4A373]/20 group cursor-zoom-in"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              onClick={() => setIsZoomModalOpen(true)} // Click to view details
+              onClick={() => setIsZoomModalOpen(true)}
               title="Click to view full screen"
             >
-                {/* Main Current Image (Smooth slow scale on hover) */}
+                {/* Main Current Image */}
                 {displayImages.length > 0 && (
                   <Image
                     src={urlFor(displayImages[currentImageIndex]).url()}
                     alt={`${displayProductName} - View ${currentImageIndex + 1}`}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-in-out"
+                    className={`object-cover transition-transform duration-1000 ease-in-out ${isOutOfStock ? 'grayscale-[30%]' : 'group-hover:scale-105'}`}
                     priority
                   />
+                )}
+
+                {/* 🚫 VIP SOLD OUT OVERLAY  */}
+                {isOutOfStock && (
+                  <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] z-20 flex items-center justify-center pointer-events-none">
+                    <span className="bg-[#2C2C2C] text-white text-xs uppercase tracking-[0.3em] px-6 py-3 font-bold shadow-2xl">
+                      Sold Out
+                    </span>
+                  </div>
                 )}
 
                 {/* Discount Badge */}
@@ -181,12 +199,12 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
                    </div>
                 )}
 
-                {/* Zoom Icon Hint (Subtle) */}
+                {/* Zoom Icon Hint */}
                 <div className="absolute top-6 left-6 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C2C2C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                 </div>
 
-                {/* Slider Controls (Arrows & Dots) */}
+                {/* Slider Controls */}
                 {displayImages.length > 1 && (
                   <>
                     <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-[#2C2C2C] shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-30">
@@ -218,7 +236,10 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
             </h1>
 
             <div className="flex items-center gap-4 text-2xl md:text-3xl font-light mb-10">
-                {hasDiscount ? (
+                {isOutOfStock ? (
+                   // Agar out of stock hai toh yahan clear bata do
+                   <span className="text-[#8C3A3A] font-bold uppercase tracking-widest text-lg md:text-xl">Out of Stock</span>
+                ) : hasDiscount ? (
                   <>
                     <span className="text-gray-400 line-through text-xl decoration-[#8C3A3A]/50">{oldPrice}</span>
                     <span className="text-[#2C2C2C] font-medium">{currentPrice} <span className="text-sm text-[#D4A373] font-bold tracking-widest ml-1">DHS</span></span>
@@ -259,7 +280,19 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
 
             {/* 🛒 ACTION BUTTONS */}
             <div className="flex flex-col gap-4 mb-12">
-              <button onClick={handleAddToCart} className="w-full bg-[#2C2C2C] text-white py-4 uppercase tracking-[0.2em] hover:bg-[#D4A373] transition-colors duration-300 text-xs font-bold">{t.addToBag}</button>
+              {}
+              <button 
+                onClick={handleAddToCart} 
+                disabled={isOutOfStock}
+                className={`w-full py-4 uppercase tracking-[0.2em] transition-colors duration-300 text-xs font-bold ${
+                  isOutOfStock 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300' 
+                    : 'bg-[#2C2C2C] text-white hover:bg-[#D4A373]'
+                }`}
+              >
+                {isOutOfStock ? t.outOfStock : t.addToBag}
+              </button>
+
               <button onClick={handleWhatsAppClick} className="w-full border border-[#25D366] text-[#25D366] py-4 uppercase tracking-[0.2em] hover:bg-[#25D366] hover:text-white transition-colors duration-300 text-xs font-bold flex items-center justify-center gap-2"><span>{t.orderWhatsApp}</span></button>
             </div>
 
@@ -298,7 +331,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
             else setIsZoomModalOpen(false); 
           }}
         >
-          {/* Close Button */}
           <button 
             className="fixed top-6 right-6 z-[110] bg-[#2C2C2C] text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-[#D4A373] transition-colors shadow-xl"
             onClick={(e) => { e.stopPropagation(); setIsZoomModalOpen(false); }}
@@ -332,7 +364,7 @@ function RelatedProducts({ currentSlug, category, lang }: { currentSlug: string,
   useEffect(() => {
     const fetchRelated = async () => {
       const query = `*[_type == "product" && slug.current != "${currentSlug}"][0...4]{
-        _id, name, name_fr, name_ar, slug, price, originalPrice, image, category
+        _id, name, name_fr, name_ar, slug, price, originalPrice, image, category, inStock
       }`;
       const data = await client.fetch(query);
       setProducts(data);

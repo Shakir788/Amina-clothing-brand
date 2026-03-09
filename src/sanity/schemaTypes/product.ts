@@ -62,13 +62,23 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Collection 2025', value: 'Collection 2025' },
+          { title: 'Collection 2026', value: 'Collection 2026' },
           { title: 'Dresses', value: 'Dresses' },
           { title: 'Sets', value: 'Sets' },
           { title: 'Abayas', value: 'Abayas' },
         ],
       },
-      initialValue: 'Collection 2025',
+      initialValue: 'Collection 2026',
+      group: 'basic',
+    }),
+
+    // ✨ NAYA: OUT OF STOCK TOGGLE ✨
+    defineField({
+      name: 'inStock',
+      title: '📦 In Stock (Available for Sale?)',
+      description: 'Turn this OFF to mark the product as SOLD OUT on the website.',
+      type: 'boolean',
+      initialValue: true, 
       group: 'basic',
     }),
 
@@ -102,7 +112,7 @@ export default defineType({
         {
           type: 'object',
           options: {
-            collapsible: true, // Form ko clean rakhne ke liye collapse option
+            collapsible: true, 
             collapsed: false,
           },
           fieldsets: [
@@ -138,7 +148,6 @@ export default defineType({
             { name: 'colorDescription_fr', title: 'Description (French)', type: 'text', rows: 2, fieldset: 'desc' },
             { name: 'colorDescription_ar', title: 'Description (Arabic)', type: 'text', rows: 2, fieldset: 'desc' },
           ],
-          // ✨ NAYA: Color box band hone par kaisa dikhega
           preview: {
             select: {
               title: 'colorName',
@@ -194,18 +203,20 @@ export default defineType({
     }),
   ],
 
-  
+  // ✨ NAYA: Sanity list me hi dikhega ki product stock me hai ya nahi
   preview: {
     select: {
       title: 'name',
       price: 'price',
       status: 'status',
+      inStock: 'inStock', 
       media: 'image',
     },
-    prepare({ title, price, status, media }) {
+    prepare({ title, price, status, inStock, media }) {
+      const stockText = inStock === false ? '🚫 Sold Out' : '✅ In Stock';
       return {
         title,
-        subtitle: `${price ? price + ' DHS' : 'No Price'} • ${status === 'approved' ? '🟢 Live' : '🟠 Draft'}`,
+        subtitle: `${price ? price + ' DHS' : 'No Price'} • ${stockText} • ${status === 'approved' ? '🟢 Live' : '🟠 Draft'}`,
         media,
       }
     },

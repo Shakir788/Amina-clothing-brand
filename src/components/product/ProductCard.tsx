@@ -17,6 +17,7 @@ interface ProductCardProps {
     };
     image: any;
     category?: any;
+    inStock?: boolean; 
   };
   lang?: string;
 }
@@ -35,9 +36,10 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
   // Price Parsing
   const currentPrice = Number(product.price);
   const oldPrice = product.originalPrice ? Number(product.originalPrice) : null;
+  const isOutOfStock = product.inStock === false;
+
   
-  // Logic: Discount tabhi dikhao jab Original Price Selling Price se zyada ho
-  const hasDiscount = oldPrice && oldPrice > currentPrice;
+  const hasDiscount = oldPrice && oldPrice > currentPrice && !isOutOfStock;
 
   // ✨ Exact Round Figure for Discount
   const discountPercentage = hasDiscount 
@@ -50,7 +52,7 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
   return (
     <Link 
       href={`/${lang}/product/${product.slug.current}`} 
-      className="group block"
+      className={`group block ${isOutOfStock ? 'opacity-90' : ''}`} 
     >
       <div className="flex flex-col items-center">
         
@@ -59,7 +61,16 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
           
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500 z-10" />
 
-          {/* 🏷️ Top Right Badge (Image par) */}
+          {/* 🚫 VIP SOLD OUT OVERLAY (Glass Effect) */}
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-30 flex items-center justify-center">
+              <span className="bg-[#2C2C2C] text-white text-[10px] uppercase tracking-[0.2em] px-4 py-2 font-bold shadow-xl">
+                Sold Out
+              </span>
+            </div>
+          )}
+
+          {/* 🏷️ Top Right Badge (Image par - Sirf tab jab stock ho) */}
           {hasDiscount && (
             <div className="absolute top-4 right-4 z-20 bg-[#8C3A3A] text-white text-[9px] font-bold px-3 py-1 rounded-full shadow-lg border border-[#D4A373]/30">
               -{discountPercentage}%
@@ -71,7 +82,7 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
               src={urlFor(product.image).url()}
               alt={productName}
               fill
-              className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+              className={`object-cover transition-transform duration-700 ease-in-out ${isOutOfStock ? 'grayscale-[20%]' : 'group-hover:scale-110'}`}
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             />
           )}
@@ -87,9 +98,14 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
             {productName} 
           </h3>
 
-          {/* 💸 Price Section with Percentage */}
+          {/* 💸 Price Section */}
           <div className="flex items-center justify-center gap-2 mt-1">
-            {hasDiscount ? (
+            {isOutOfStock ? (
+          
+              <span className="text-[#8C3A3A] font-bold text-xs uppercase tracking-widest mt-1">
+                Out of Stock
+              </span>
+            ) : hasDiscount ? (
               <>
                 <span className="text-gray-400 text-[11px] line-through font-serif">
                   {oldPrice}
@@ -97,7 +113,6 @@ const ProductCard = ({ product, lang = 'en' }: ProductCardProps) => {
                 <span className="text-[#2C2C2C] font-bold text-sm font-serif">
                   {currentPrice} <span className="text-[10px] text-[#D4A373]">DHS</span>
                 </span>
-                {/* ✨ Percentage next to Price */}
                 <span className="text-[#8C3A3A] text-[10px] font-bold ml-1">
                   ({discountPercentage}% OFF)
                 </span>
