@@ -9,7 +9,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// 🌍 Smart Dictionary
+// 🌍 Smart Dictionary (Added Delete Modal Text)
 const translations = {
   en: {
     title: "ORDER MANAGEMENT PANEL",
@@ -33,6 +33,10 @@ const translations = {
     itemDesc: "Item Description",
     totalMAD: "Total Amount",
     downloadInvoice: "📄 Download Invoice",
+    deleteBtn: "🗑️ Delete",
+    deleteTitle: "Delete Order",
+    cancelBtn: "Cancel",
+    confirmDelete: "Are you sure you want to delete this order? This action cannot be undone.",
     statusMap: { Pending: "Pending ⏳", Shipped: "Shipped 🚚", Delivered: "Delivered ✅", Cancelled: "Cancelled ❌" }
   },
   fr: {
@@ -56,7 +60,11 @@ const translations = {
     billedTo: "Facturé à",
     itemDesc: "Description de l'article",
     totalMAD: "Montant total",
-    downloadInvoice: "📄 Télécharger la facture",
+    downloadInvoice: "📄 Télécharger",
+    deleteBtn: "🗑️ Supprimer",
+    deleteTitle: "Supprimer la commande",
+    cancelBtn: "Annuler",
+    confirmDelete: "Voulez-vous vraiment supprimer cette commande ? Cette action est irréversible.",
     statusMap: { Pending: "En attente ⏳", Shipped: "Expédié 🚚", Delivered: "Livré ✅", Cancelled: "Annulé ❌" }
   },
   ar: {
@@ -81,6 +89,10 @@ const translations = {
     itemDesc: "وصف الصنف",
     totalMAD: "الإجمالي",
     downloadInvoice: "📄 تحميل الفاتورة",
+    deleteBtn: "🗑️ حذف",
+    deleteTitle: "حذف الطلب",
+    cancelBtn: "إلغاء",
+    confirmDelete: "هل أنت متأكد أنك تريد حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
     statusMap: { Pending: "قيد الانتظار ⏳", Shipped: "تم الشحن 🚚", Delivered: "تم التوصيل ✅", Cancelled: "ملغي ❌" }
   }
 };
@@ -109,6 +121,9 @@ export default function AdminDashboard({ params }: any) {
   // Invoice State
   const [invoiceData, setInvoiceData] = useState<any>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
+
+  // 🗑️ Delete Modal State
+  const [orderToDelete, setOrderToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) fetchOrders();
@@ -148,6 +163,23 @@ export default function AdminDashboard({ params }: any) {
   async function updateStatus(id: number, newStatus: string) {
     setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
     await supabase.from("orders").update({ status: newStatus }).eq("id", id);
+  }
+
+  // 🗑️ EXECUTE DELETE
+  async function executeDelete() {
+    if (orderToDelete === null) return;
+    const id = orderToDelete;
+    
+    // Modal band karo aur UI update karo turant
+    setOrderToDelete(null);
+    setOrders(orders.filter(o => o.id !== id));
+
+    // DB update
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+    if (error) {
+      alert("Error deleting order!");
+      fetchOrders();
+    }
   }
 
   // 🖨️ PDF Generation (HD)
@@ -192,7 +224,7 @@ export default function AdminDashboard({ params }: any) {
           </div>
         </div>
 
-        {/* 📊 QUICK STATS BOXES (Yahi miss ho gaye the!) */}
+        {/* 📊 QUICK STATS BOXES */}
         <div className="grid grid-cols-3 gap-3 md:gap-6 mb-8">
           <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 text-center">
             <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">{t.total}</p>
@@ -247,11 +279,18 @@ export default function AdminDashboard({ params }: any) {
                     <span dir="ltr">{order.phone}</span>
                   </p>
                 </div>
+                
                 <div className={"flex flex-col gap-2 " + (isRtl ? "md:items-start" : "md:items-end")}>
-                   <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)} className="text-xs border px-2 py-1 rounded hover:bg-gray-50 transition w-fit outline-none cursor-pointer font-semibold" dir={isRtl ? "rtl" : "ltr"}><option value="Pending">{t.statusMap.Pending}</option><option value="Shipped">{t.statusMap.Shipped}</option><option value="Delivered">{t.statusMap.Delivered}</option><option value="Cancelled">{t.statusMap.Cancelled}</option></select>
-                    <button onClick={() => generatePDF(order)} className="text-xs bg-[#c9a871] text-white px-3 py-1 rounded hover:bg-[#b08d55] transition font-medium w-fit shadow-sm">
-                      {t.downloadInvoice}
-                    </button>
+                    <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)} className="text-xs border px-2 py-1 rounded hover:bg-gray-50 transition w-full md:w-fit outline-none cursor-pointer font-semibold" dir={isRtl ? "rtl" : "ltr"}><option value="Pending">{t.statusMap.Pending}</option><option value="Shipped">{t.statusMap.Shipped}</option><option value="Delivered">{t.statusMap.Delivered}</option><option value="Cancelled">{t.statusMap.Cancelled}</option></select>
+                    
+                    <div className="flex gap-2">
+                      <button onClick={() => setOrderToDelete(order.id)} className="text-xs bg-white text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50 transition font-medium shadow-sm">
+                        {t.deleteBtn}
+                      </button>
+                      <button onClick={() => generatePDF(order)} className="text-xs bg-[#c9a871] text-white px-3 py-1 rounded hover:bg-[#b08d55] transition font-medium shadow-sm">
+                        {t.downloadInvoice}
+                      </button>
+                    </div>
                 </div>
               </div>
             ))}
@@ -259,22 +298,44 @@ export default function AdminDashboard({ params }: any) {
         </div>
       </div>
 
+      {/* 💎 PREMIUM DELETE CONFIRMATION MODAL */}
+      {orderToDelete !== null && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity">
+          <div className="bg-[#f4f1ea] border border-[#c9a871]/30 p-8 rounded-sm shadow-2xl max-w-sm w-full text-center relative" dir={isRtl ? "rtl" : "ltr"}>
+            <h3 className="text-2xl font-bold mb-3 tracking-wider" style={{ fontFamily: "var(--font-playfair)", color: "#2c2c2c" }}>
+              {t.deleteTitle}
+            </h3>
+            <p className="text-gray-600 text-sm mb-8 leading-relaxed">
+              {t.confirmDelete}
+            </p>
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => setOrderToDelete(null)}
+                className="px-6 py-2 text-sm font-medium border border-gray-400 text-gray-700 rounded-sm hover:bg-gray-100 transition"
+              >
+                {t.cancelBtn}
+              </button>
+              <button
+                onClick={executeDelete}
+                className="px-6 py-2 text-sm font-medium bg-red-600 text-white rounded-sm hover:bg-red-700 transition shadow-sm"
+              >
+                {t.deleteBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 🧾 PREMIUM LUXURY COLOR INVOICE */}
       {invoiceData && (
         <div className="fixed top-[-9999px] left-[-9999px]">
           <div ref={invoiceRef} className="p-12 w-[800px] text-[#2c2c2c] relative" style={{ backgroundColor: "#f4f1ea" }}>
-            
-            {/* Elegant Golden Border */}
             <div className="absolute inset-4 border border-[#c9a871] opacity-50 pointer-events-none rounded-sm"></div>
-            
             <div className="relative z-10">
-              {/* Header with Direct Elegant Gold Text */}
               <div className="text-center mb-10 border-b border-[#c9a871] pb-8">
                 <h1 className="text-5xl font-extrabold tracking-[0.2em] mb-3" style={{ fontFamily: "var(--font-playfair)", color: "#c9a871" }}>AMINA</h1>
                 <p className="text-[#c9a871] tracking-[0.3em] text-sm uppercase font-semibold" style={{ fontFamily: "var(--font-playfair)" }}>Luxe marocain élégant</p>
               </div>
-
-              {/* Invoice ID & Date section */}
               <div className="flex justify-between items-center mb-10 text-right">
                 <div></div>
                 <div className="text-right">
@@ -283,16 +344,12 @@ export default function AdminDashboard({ params }: any) {
                   <p className="text-xs text-gray-500 mt-1">{new Date(invoiceData.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
-
-              {/* Customer Info */}
               <div className="mb-12 bg-white/50 p-6 rounded-sm border border-[#c9a871]/20">
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">{t.billedTo}:</p>
                 <p className="text-xl font-semibold mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{invoiceData.customer_name}</p>
                 <p className="text-gray-600 text-sm">{invoiceData.city}</p>
                 <p className="text-gray-600 text-sm mt-1 tracking-wider">{invoiceData.phone}</p>
               </div>
-
-              {/* Items Table */}
               <table className="w-full mb-16 border-collapse">
                 <thead>
                   <tr className="border-b border-[#c9a871] text-left uppercase tracking-widest text-[10px]">
@@ -311,8 +368,6 @@ export default function AdminDashboard({ params }: any) {
                   </tr>
                 </tbody>
               </table>
-
-              {/* Total & Footer */}
               <div className="flex justify-between items-end mb-16">
                 <div className="text-gray-500 text-sm italic" style={{ fontFamily: "var(--font-playfair)" }}>
                   Merci pour votre confiance.<br/>Portez votre élégance avec fierté.
@@ -322,8 +377,6 @@ export default function AdminDashboard({ params }: any) {
                   <p className="text-3xl font-bold" style={{ color: "#c9a871" }}>{invoiceData.price || "TBD"}</p>
                 </div>
               </div>
-              
-              {/* Bottom Social Strip */}
               <div className="flex justify-center items-center gap-6 pt-6 border-t border-[#c9a871]/40 text-xs text-gray-500 tracking-wider">
                 <span className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>

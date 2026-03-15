@@ -8,7 +8,7 @@ export default function LivePreview({ document }: any) {
     return (
       <Card padding={4} tone="caution" shadow={1} radius={2}>
         <Text align="center" size={2}>
-          🔴 Pehle "Slug" generate karo tab Preview dikhega.
+          Please add a slug to the product to see the live preview.
         </Text>
       </Card>
     )
