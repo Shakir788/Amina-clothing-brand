@@ -9,7 +9,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// 🌍 Smart Dictionary (Added Delete Modal Text)
+// 🌍 Smart Dictionary (Added PDF translations for Tagline and Footer)
 const translations = {
   en: {
     title: "ORDER MANAGEMENT PANEL",
@@ -32,6 +32,10 @@ const translations = {
     billedTo: "Billed To",
     itemDesc: "Item Description",
     totalMAD: "Total Amount",
+    tagline: "Elegant Moroccan Luxury",
+    fallbackProd: "Luxury Apparel",
+    footerMsg1: "Thank you for choosing AMINA.",
+    footerMsg2: "Wear your elegance with pride.",
     downloadInvoice: "📄 Download Invoice",
     deleteBtn: "🗑️ Delete",
     deleteTitle: "Delete Order",
@@ -60,6 +64,10 @@ const translations = {
     billedTo: "Facturé à",
     itemDesc: "Description de l'article",
     totalMAD: "Montant total",
+    tagline: "Luxe marocain élégant",
+    fallbackProd: "Article de Luxe",
+    footerMsg1: "Merci pour votre confiance.",
+    footerMsg2: "Portez votre élégance avec fierté.",
     downloadInvoice: "📄 Télécharger",
     deleteBtn: "🗑️ Supprimer",
     deleteTitle: "Supprimer la commande",
@@ -88,6 +96,10 @@ const translations = {
     billedTo: "فاتورة لـ",
     itemDesc: "وصف الصنف",
     totalMAD: "الإجمالي",
+    tagline: "فخامة مغربية أنيقة",
+    fallbackProd: "ملابس فاخرة",
+    footerMsg1: "شكراً لثقتكم في أمينة.",
+    footerMsg2: "ارتدي أناقتك بكل فخر.",
     downloadInvoice: "📄 تحميل الفاتورة",
     deleteBtn: "🗑️ حذف",
     deleteTitle: "حذف الطلب",
@@ -326,64 +338,80 @@ export default function AdminDashboard({ params }: any) {
         </div>
       )}
 
-      {/* 🧾 PREMIUM LUXURY COLOR INVOICE */}
+      {/* 🧾 PREMIUM LUXURY COLOR INVOICE (With Auto-RTL & Arabic Fix) */}
       {invoiceData && (
         <div className="fixed top-[-9999px] left-[-9999px]">
-          <div ref={invoiceRef} className="p-12 w-[800px] text-[#2c2c2c] relative" style={{ backgroundColor: "#f4f1ea" }}>
+          <div ref={invoiceRef} className="p-12 w-[800px] text-[#2c2c2c] relative" style={{ backgroundColor: "#f4f1ea" }} dir={isRtl ? "rtl" : "ltr"}>
             <div className="absolute inset-4 border border-[#c9a871] opacity-50 pointer-events-none rounded-sm"></div>
             <div className="relative z-10">
+              
+              {/* BRAND HEADER */}
               <div className="text-center mb-10 border-b border-[#c9a871] pb-8">
-                <h1 className="text-5xl font-extrabold tracking-[0.2em] mb-3" style={{ fontFamily: "var(--font-playfair)", color: "#c9a871" }}>AMINA</h1>
-                <p className="text-[#c9a871] tracking-[0.3em] text-sm uppercase font-semibold" style={{ fontFamily: "var(--font-playfair)" }}>Luxe marocain élégant</p>
+                <h1 className="text-5xl font-extrabold tracking-[0.2em] mb-3" style={{ fontFamily: "var(--font-playfair)", color: "#c9a871", direction: "ltr" }}>AMINA</h1>
+                <p className="text-[#c9a871] tracking-[0.3em] text-sm uppercase font-semibold" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "var(--font-playfair)" }}>
+                  {t.tagline}
+                </p>
               </div>
-              <div className="flex justify-between items-center mb-10 text-right">
+              
+              {/* INVOICE DETAILS */}
+              <div className="flex justify-between items-center mb-10">
                 <div></div>
-                <div className="text-right">
-                  <h2 className="text-2xl font-light tracking-[0.2em] mb-2 text-gray-500 uppercase">{t.invoiceTitle}</h2>
-                  <p className="text-sm font-bold tracking-wider">#{invoiceData.id}</p>
-                  <p className="text-xs text-gray-500 mt-1">{new Date(invoiceData.created_at).toLocaleDateString()}</p>
+                <div className={isRtl ? "text-left" : "text-right"}>
+                  <h2 className="text-2xl font-light tracking-[0.2em] mb-2 text-gray-500 uppercase" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>{t.invoiceTitle}</h2>
+                  <p className="text-sm font-bold tracking-wider" dir="ltr">#{invoiceData.id}</p>
+                  <p className="text-xs text-gray-500 mt-1" dir="ltr">{new Date(invoiceData.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
+
+              {/* CUSTOMER INFO */}
               <div className="mb-12 bg-white/50 p-6 rounded-sm border border-[#c9a871]/20">
-                <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">{t.billedTo}:</p>
-                <p className="text-xl font-semibold mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{invoiceData.customer_name}</p>
-                <p className="text-gray-600 text-sm">{invoiceData.city}</p>
-                <p className="text-gray-600 text-sm mt-1 tracking-wider">{invoiceData.phone}</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-3" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>{t.billedTo}:</p>
+                <p className="text-xl font-semibold mb-1" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "var(--font-playfair)" }}>{invoiceData.customer_name}</p>
+                <p className="text-gray-600 text-sm" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>{invoiceData.city}</p>
+                <p className="text-gray-600 text-sm mt-1 tracking-wider" dir="ltr">{invoiceData.phone}</p>
               </div>
+
+              {/* ITEMS TABLE */}
               <table className="w-full mb-16 border-collapse">
                 <thead>
-                  <tr className="border-b border-[#c9a871] text-left uppercase tracking-widest text-[10px]">
-                    <th className="py-4 text-gray-500 w-1/2">{t.itemDesc}</th>
-                    <th className="py-4 text-gray-500 text-center">{translations[lang as keyof typeof translations]?.color || "Color"}</th>
-                    <th className="py-4 text-gray-500 text-center">{translations[lang as keyof typeof translations]?.size || "Size"}</th>
-                    <th className="py-4 text-gray-500 text-right">{translations[lang as keyof typeof translations]?.price || "Price"}</th>
+                  <tr className="border-b border-[#c9a871] uppercase tracking-widest text-[10px]" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>
+                    <th className={`py-4 text-gray-500 w-1/2 ${isRtl ? 'text-right' : 'text-left'}`}>{t.itemDesc}</th>
+                    <th className="py-4 text-gray-500 text-center">{t.color}</th>
+                    <th className="py-4 text-gray-500 text-center">{t.size}</th>
+                    <th className={`py-4 text-gray-500 ${isRtl ? 'text-left' : 'text-right'}`}>{t.price}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-gray-200/50">
-                    <td className="py-6 font-medium text-lg" style={{ fontFamily: "var(--font-playfair)" }}>{invoiceData.product || "Article de Luxe"}</td>
-                    <td className="py-6 text-center text-sm">{invoiceData.color || "-"}</td>
-                    <td className="py-6 text-center font-bold text-sm">{invoiceData.size}</td>
-                    <td className="py-6 text-right font-semibold text-lg">{invoiceData.price || "-"}</td>
+                    <td className={`py-6 font-medium text-lg ${isRtl ? 'text-right' : 'text-left'}`} style={{ fontFamily: isRtl ? "Arial, sans-serif" : "var(--font-playfair)" }}>
+                      {invoiceData.product || t.fallbackProd}
+                    </td>
+                    <td className="py-6 text-center text-sm" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>{invoiceData.color || "-"}</td>
+                    <td className="py-6 text-center font-bold text-sm" dir="ltr">{invoiceData.size}</td>
+                    <td className={`py-6 font-semibold text-lg ${isRtl ? 'text-left' : 'text-right'}`} dir="ltr">{invoiceData.price || "-"}</td>
                   </tr>
                 </tbody>
               </table>
+
+              {/* TOTAL & FOOTER */}
               <div className="flex justify-between items-end mb-16">
-                <div className="text-gray-500 text-sm italic" style={{ fontFamily: "var(--font-playfair)" }}>
-                  Merci pour votre confiance.<br/>Portez votre élégance avec fierté.
+                <div className="text-gray-500 text-sm italic" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "var(--font-playfair)" }}>
+                  {t.footerMsg1}<br/>{t.footerMsg2}
                 </div>
-                <div className="text-right bg-white p-6 shadow-sm border border-[#c9a871]/30 rounded-sm">
-                  <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">{t.totalMAD}</p>
-                  <p className="text-3xl font-bold" style={{ color: "#c9a871" }}>{invoiceData.price || "TBD"}</p>
+                <div className={`bg-white p-6 shadow-sm border border-[#c9a871]/30 rounded-sm ${isRtl ? 'text-left' : 'text-right'}`}>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2" style={{ fontFamily: isRtl ? "Arial, sans-serif" : "inherit" }}>{t.totalMAD}</p>
+                  <p className="text-3xl font-bold" style={{ color: "#c9a871" }} dir="ltr">{invoiceData.price || "TBD"}</p>
                 </div>
               </div>
+              
+              {/* BOTTOM SOCIAL STRIP */}
               <div className="flex justify-center items-center gap-6 pt-6 border-t border-[#c9a871]/40 text-xs text-gray-500 tracking-wider">
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2" dir="ltr">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                   @aminaclothingbrand
                 </span>
                 <span>•</span>
-                <span>aminaclothing.shop</span>
+                <span dir="ltr">aminaclothing.shop</span>
               </div>
             </div>
           </div>
