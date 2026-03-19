@@ -1,27 +1,53 @@
 "use client";
 
 import { useChat } from 'ai/react';
-import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useRef, useEffect, Suspense } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import ChatProductCard from './ChatProductCard'; 
 import { useCart } from '@/context/CartContext'; 
 
 export default function AIChatBot() {
+  return (
+    <Suspense fallback={null}>
+      <ChatBotContent />
+    </Suspense>
+  );
+}
+
+function ChatBotContent() {
   const [isOpen, setIsOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const { addToCart, toggleCart } = useCart();
+  
   const params = useParams();
+  const searchParams = useSearchParams();
+  
   const lang = (params?.lang as string) || 'en';
   
-  // Pura Salam in Arabic
+  // 🚀 PRODUCT CONTEXT PADHNE KA LOGIC
+  const productContext = searchParams?.get('item'); // Link se item ka naam nikalega
+  
+  // Normal Welcome Messages
   const welcomeMessages: Record<string, string> = {
     en: "Hello! 👋 I am Amina, your personal stylist. Looking for a Kaftan for a wedding or something casual?",
     fr: "Bonjour ! 👋 Je suis Amina, votre styliste personnelle. Cherchez-vous un Caftan pour un mariage ?",
     ar: "السلام عليكم! 👋 أنا أمينة، مستشارة الأزياء الخاصة بك. هل تبحثين عن قفطان للمناسبات أو ملابس يومية؟",
   };
 
-  // Short Bubble Text
+  // 🚀 DYNAMIC WELCOME MESSAGE (Agar URL me Product ka naam hai)
+  const getDynamicWelcome = () => {
+    if (productContext) {
+      // Under_scores ko space me badal do (e.g. Black_Abaya -> Black Abaya)
+      const productName = productContext.replace(/_/g, ' '); 
+      
+      if (lang === 'fr') return `Bonjour ! 👋 Je vois que vous êtes intéressé(e) par notre **${productName}**. Cherchez-vous une taille spécifique ou avez-vous des questions sur le prix ?`;
+      if (lang === 'ar') return `السلام عليكم! 👋 أرى أنك مهتمة بـ **${productName}**. هل تبحثين عن مقاس معين أو لديك أسئلة حول السعر؟`;
+      return `Hello! 👋 I see you're interested in our **${productName}**. Are you looking for a specific size or pricing details?`;
+    }
+    return welcomeMessages[lang] || welcomeMessages.en;
+  };
+
   const bubbleText: Record<string, string> = {
     en: "Hi there! 👋 Need help?",
     fr: "Salut ! 👋 Besoin d'aide ?",
@@ -30,28 +56,43 @@ export default function AIChatBot() {
 
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     initialMessages: [
+      // 🧠 1. THE HIDDEN BRAIN (AI ki memory lock karne ke liye)
+      {
+        id: 'system-memory',
+        role: 'system',
+        content: productContext 
+          ? `CRITICAL CONTEXT: The user clicked a link specifically for the product "${productContext.replace(/_/g, ' ')}". No matter what they say (even a simple "hello"), you MUST acknowledge this product. Ask if they need help with the size, price, or colors of the ${productContext.replace(/_/g, ' ')}.`
+          : `You are Amina, an expert stylist for a luxury Moroccan clothing brand.`
+      },
+      // 💬 2. THE VISIBLE MESSAGE (Jo screen par dikhega)
       {
         id: 'welcome',
-        role: 'system',
-        content: welcomeMessages[lang] || welcomeMessages.en
+        role: 'assistant', 
+        content: getDynamicWelcome()
       }
     ]
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  
+  // Auto-Open Logic
+  useEffect(() => {
+    if (searchParams?.get('chat') === 'open') {
+      setIsOpen(true);
+      setShowWelcome(false);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!isOpen) {
+      if (!isOpen && searchParams?.get('chat') !== 'open') {
         setShowWelcome(true);
       }
     }, 4000); 
-
     return () => clearTimeout(timer);
-  }, [isOpen]);
+  }, [isOpen, searchParams]);
 
-  // 2. EXISTING LOGIC: "Add to Cart" Handling 
+  // Add to Cart Logic
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role === 'assistant' && lastMessage.content.includes("[ACTION_ADD_TO_CART:")) {
@@ -76,25 +117,20 @@ export default function AIChatBot() {
     }
   }, [messages, addToCart, toggleCart]); 
 
-  // Auto Scroll 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isLoading, isOpen]);
 
-  // Message Renderer 
   const renderMessageContent = (content: string) => {
     let cleanContent = content.replace(/\[ACTION_ADD_TO_CART:(.*?)\]/g, "");
-
     if (!cleanContent.includes("[PRODUCT_DATA:")) {
       return <span>{cleanContent}</span>;
     }
-
     const parts = cleanContent.split(/\[PRODUCT_DATA:(.*?)\]/);
     const firstText = parts[0]; 
     let productCard = null;
-
     for (let i = 1; i < parts.length; i++) {
       const part = parts[i].trim();
       if (part.startsWith('{') && part.endsWith('}')) {
@@ -107,7 +143,6 @@ export default function AIChatBot() {
         } catch (e) { continue; }
       }
     }
-
     return (
       <div className="flex flex-col gap-2">
         <span>{firstText}</span>
@@ -118,10 +153,7 @@ export default function AIChatBot() {
 
   return (
     <>
-      {/* Floating Wrapper */}
       <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 ${lang === 'ar' ? 'items-start left-6 right-auto' : ''}`}>
-        
-        {/* SILENT WELCOME BUBBLE */}
         {showWelcome && !isOpen && (
           <div className="animate-bounce mb-2 relative">
              <div 
@@ -132,41 +164,33 @@ export default function AIChatBot() {
                   {bubbleText[lang] || bubbleText.en}
                 </span>
              </div>
-             {/* Close Bubble Button */}
              <button 
                onClick={(e) => { e.stopPropagation(); setShowWelcome(false); }}
                className="absolute -top-2 -left-2 bg-gray-200 text-gray-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px] hover:bg-red-500 hover:text-white transition-colors"
-             >
-               ✕
-             </button>
+             >✕</button>
           </div>
         )}
 
-        {/* Main Toggle Button */}
         <button
           onClick={() => { setIsOpen(!isOpen); setShowWelcome(false); }}
           className={`group flex items-center gap-3 transition-all duration-500 ${isOpen ? 'rotate-90 scale-0 opacity-0' : 'scale-100 opacity-100'}`}
         >
           <div className="bg-black text-white p-4 rounded-full shadow-2xl border border-[#D4A373]/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 rounded-full"></div>
-             {/* Notification Dot */}
              {!isOpen && !showWelcome && (
                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border border-black rounded-full animate-pulse z-20"></span>
              )}
              <span className="text-2xl relative z-10">✨</span>
           </div>
-          {/* Label */}
           <span className="bg-white px-4 py-2 rounded-full shadow-lg text-xs font-bold tracking-[0.2em] text-black border border-gray-100 hidden md:block opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-4 group-hover:translate-x-0">
             STYLIST
           </span>
         </button>
       </div>
 
-      {/* Chat Window */}
-      <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0 pointer-events-none'}`}>
+      <div className={`fixed bottom-6 right-6 z-50 flex flex-col items-end transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isOpen ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-90 opacity-0 pointer-events-none'}`}>
         <div className="w-[90vw] md:w-[380px] h-[600px] max-h-[80vh] bg-[#F9F9F9]/95 backdrop-blur-md border border-white/50 shadow-2xl rounded-[2rem] flex flex-col overflow-hidden relative">
           
-          {/* Header */}
           <div className="bg-white/80 backdrop-blur-sm p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -180,14 +204,12 @@ export default function AIChatBot() {
                 <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-0.5">Virtual Stylist</p>
               </div>
             </div>
-            <button onClick={() => setIsOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-500">
-              ✕
-            </button>
+            <button onClick={() => setIsOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-500">✕</button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-thin scrollbar-thumb-gray-200">
-            {messages.map((m) => (
+            {/* 🚀 HIDDEN BRAIN KO CHHUPANE WALA LOGIC (.filter add kiya hai) */}
+            {messages.filter((m) => m.role !== 'system').map((m) => (
               <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                 {m.role !== 'user' && (
                   <div className="w-6 h-6 rounded-full bg-[#D4A373] flex-shrink-0 mr-2 flex items-center justify-center text-white text-[10px] font-serif">A</div>
@@ -213,7 +235,6 @@ export default function AIChatBot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Form */}
           <div className="p-4 bg-white border-t border-gray-100">
             <form onSubmit={handleSubmit} className="relative flex items-center gap-2 bg-[#F5F5F0] p-1.5 rounded-full border border-transparent focus-within:border-[#D4A373]/50 transition-all duration-300">
               <input
