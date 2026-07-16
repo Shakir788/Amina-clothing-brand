@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.99.1",
     "@types/negotiator": "^0.6.4",
     "ai": "^2.2.37",
+    "framer-motion": "^12.42.2",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.0",
     "lucide-react": "^0.563.0",

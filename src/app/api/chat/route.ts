@@ -93,26 +93,53 @@ export async function POST(req: Request) {
     ⚠️ Do NOT use Markdown images. Only use the JSON format above. Never invent products not in the CURRENT STOCK.
     `;
 
-    // 5. Call AI (Requested Model)
-    const response = await openai.chat.completions.create({
-      model: 'arcee-ai/trinity-large-preview:free',
-      stream: true,
-      temperature: 0.4, // Rakha thoda low, taaki sales pitch accurate ho aur hawabazi na kare
-      top_p: 0.9,
-      max_tokens: 400, 
-      frequency_penalty: 0.4,
-      presence_penalty: 0.3,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages,
-      ],
-    });
+    // 🚀 5. FALLBACK MODEL LIST (Teri bheji hui premium list)
+    const fallbackModels = [
+      "poolside/laguna-xs-2.1:free",
+      "nvidia/nemotron-3.5-content-safety:free",
+      "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "poolside/laguna-m.1:free",
+      "google/gemma-4-26b-a4b-it:free",
+      "google/gemma-4-31b-it:free",
+      "openai/gpt-oss-20b:free"
+    ];
 
-    const stream = OpenAIStream(response as any);
-    return new StreamingTextResponse(stream);
+    // 🔄 6. FALLBACK LOOP (Try until one succeeds)
+    for (const currentModel of fallbackModels) {
+      try {
+        console.log(`⏳ Trying AI Model: ${currentModel}...`);
+        
+        const response = await openai.chat.completions.create({
+          model: currentModel,
+          stream: true,
+          temperature: 0.4, 
+          top_p: 0.9,
+          max_tokens: 400, 
+          frequency_penalty: 0.4,
+          presence_penalty: 0.3,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages,
+          ],
+        });
+
+        console.log(`✅ Success with model: ${currentModel}`);
+        
+        // Agar response mil gaya, toh stream return kardo aur loop se baahar nikal jao
+        const stream = OpenAIStream(response as any);
+        return new StreamingTextResponse(stream);
+
+      } catch (modelError) {
+        // Agar model 404/503 deta hai, toh error pakdo aur agla try karo
+        console.warn(`⚠️ Model ${currentModel} failed. Shifting to next...`);
+      }
+    }
+
+    // Agar saare 7 models fail ho gaye (jo ki virtually impossible hai)
+    throw new Error("All fallback models are currently down.");
 
   } catch (error) {
-    console.error("❌ AI Error:", error);
-    return new Response("Amina is currently offline. Please try again later.", { status: 503 });
+    console.error("❌ AI Error (All Models Failed):", error);
+    return new Response("Amina AI is currently offline. Please try again later.", { status: 503 });
   }
 }

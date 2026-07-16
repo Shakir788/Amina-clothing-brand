@@ -38,16 +38,19 @@ export default async function CollectionPage({ params, searchParams }: any) {
 
   return (
     <div
-      className={`min-h-screen bg-[#F4F1EA] pb-20 ${isArabic ? "font-arabic" : ""}`}
+      className={`min-h-screen bg-amina-ivory pb-20 ${isArabic ? "font-arabic" : ""}`}
       dir={isArabic ? "rtl" : "ltr"}
     >
 
-      {/* HEADER */}
-      <div className="pt-24 pb-8 text-center px-4 animate-in fade-in slide-in-from-top-5 duration-700">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-3 text-[#2C2C2C] tracking-tight">
+      {/* HEADER — soft glow behind the title, shimmer heading to match the homepage */}
+      <div className="relative pt-32 pb-10 text-center px-4 animate-fade-up overflow-hidden">
+        <div className="glow-orb w-[300px] h-[300px] bg-amina-rose/15 -top-24 left-1/2 -translate-x-1/2 pointer-events-none" />
+        <span className="relative text-3xl text-amina-gold block mb-3">❦</span>
+        <h1 className="relative text-4xl md:text-5xl font-serif font-bold mb-3 tracking-tight text-shimmer animate-shimmer">
           {t.title}
         </h1>
-        <p className="text-gray-500 max-w-2xl mx-auto text-xs md:text-sm font-light tracking-wide leading-relaxed uppercase">
+        <div className="relative w-12 h-[1px] bg-amina-gold mx-auto mb-5"></div>
+        <p className="relative text-amina-stone max-w-2xl mx-auto text-xs md:text-sm font-light tracking-wide leading-relaxed uppercase">
           {t.subtitle}
         </p>
       </div>
@@ -55,12 +58,14 @@ export default async function CollectionPage({ params, searchParams }: any) {
       {/* MAIN CONTENT */}
       <div className="max-w-[1400px] mx-auto px-6">
 
-        {/* 🔘 FILTER BAR (top-left, clean) */}
-        <div className="mb-8 flex justify-start">
-          <FilterSidebar lang={lang} />
+        {/* 🔘 FILTER BAR — glass pill wrapper for consistency with the nav */}
+        <div className="mb-10 flex justify-start">
+          <div className="glass-pill rounded-full px-1.5 py-1.5 shadow-luxury-sm border border-amina-border/60">
+            <FilterSidebar lang={lang} />
+          </div>
         </div>
 
-        {/* 🛍️ PRODUCT GRID */}
+        {/* 🛍️ PRODUCT GRID — cards already carry the 3D tilt + shine from ProductCard */}
         <ProductGrid products={products} lang={lang} />
 
       </div>

@@ -6,7 +6,6 @@ import ProductCard from '@/components/product/ProductCard';
 
 export const revalidate = 0;
 
-// 1. Translations Logic
 const content = {
   en: {
     subtitle: "SPRING / SUMMER 2026",
@@ -16,6 +15,7 @@ const content = {
     storyTitle: "The Essence",
     storyText: "AMINA is not just a brand; it is a state of mind. Born from the earth, designed for the soul. We believe in fashion that whispers.",
     latestArrivals: "Latest Arrivals",
+    latestSub: "Newly added to the atelier",
     viewAll: "View All Products"
   },
   fr: {
@@ -26,6 +26,7 @@ const content = {
     storyTitle: "L'Essence",
     storyText: "AMINA n'est pas seulement une marque; c'est un état d'esprit. Né de la terre, conçu pour l'âme. Nous croyons en une mode qui chuchote.",
     latestArrivals: "Derniers Arrivages",
+    latestSub: "Nouveautés de l'atelier",
     viewAll: "Voir Tous les Produits"
   },
   ar: {
@@ -36,18 +37,17 @@ const content = {
     storyTitle: "الجوهر",
     storyText: "أمينة ليست مجرد علامة تجارية؛ إنها حالة ذهنية. ولدت من الأرض، وصممت للروح. نؤمن بالأزياء التي تهمس بالأناقة.",
     latestArrivals: "أحدث المنتجات",
+    latestSub: "وصل حديثًا إلى المرسم",
     viewAll: "عرض كل المنتجات"
   }
 };
 
-// 2. Data Fetching Function (Server Side)
 async function getLatestProducts() {
-  
   const query = `*[_type == "product"] | order(_createdAt desc)[0...8] {
     _id,
-    name,       // English
-    name_fr,    // French
-    name_ar,    // Arabic
+    name,
+    name_fr,
+    name_ar,
     price,
     originalPrice,
     slug,
@@ -57,7 +57,6 @@ async function getLatestProducts() {
   return await client.fetch(query);
 }
 
-// 3. Main Page Component
 export default async function HomePage({ params }: { params: { lang: string } }) {
   const products = await getLatestProducts(); 
   
@@ -66,13 +65,13 @@ export default async function HomePage({ params }: { params: { lang: string } })
   const isArabic = params.lang === 'ar';
 
   return (
-    <div className={`min-h-screen bg-[#F4F1EA] ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-amina-ivory ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
 
       {/* ================= HERO SECTION ================= */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 bg-black">
           <video
-            className="absolute top-0 left-0 w-full h-full object-cover opacity-90"
+            className="absolute top-0 left-0 w-full h-full object-cover"
             autoPlay
             muted
             loop
@@ -83,22 +82,36 @@ export default async function HomePage({ params }: { params: { lang: string } })
           >
             <source src="/video.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-white/20 bg-gradient-to-b from-white/30 via-transparent to-[#F4F1EA]" />
+          {/* Vignette for legibility, NOT a white wash — video stays rich and visible */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amina-ivory" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mt-20 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <p className="text-xs md:text-sm font-bold tracking-[0.3em] text-gray-900 mb-6 uppercase drop-shadow-sm">
+        {/* Ambient glow — kept low and off to the sides, doesn't fog the copy */}
+        <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+          <div className="glow-orb animate-float-slow w-[380px] h-[380px] bg-amina-rose/20 -top-24 -left-24" />
+          <div className="glow-orb animate-float w-[300px] h-[300px] bg-amina-gold/20 top-10 -right-20" />
+        </div>
+
+        <div className="relative z-10 text-center px-6 max-w-4xl mt-16 animate-fade-up">
+          <p className="text-xs md:text-sm font-bold tracking-[0.35em] text-white/90 mb-6 uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
             {t.subtitle}
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-black mb-8 tracking-tight drop-shadow-md">
-            {t.title}
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-8 tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
+            {t.title.split(' ').map((word: string, i: number) => (
+              i === t.title.split(' ').length - 1 ? (
+                <span key={i} className="text-shimmer animate-shimmer bg-shimmer-gold">{word}</span>
+              ) : (
+                <span key={i}>{word}{' '}</span>
+              )
+            ))}
           </h1>
-          <p className="text-lg md:text-xl text-gray-900 font-medium mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
+          <p className="text-lg md:text-xl text-white/95 font-medium mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
             {t.description}
           </p>
           <Link 
             href={`/${params.lang}/collection`}
-            className="inline-block border border-black px-10 py-4 text-xs font-bold tracking-[0.2em] uppercase hover:bg-black hover:text-white transition-all duration-300 bg-white/40 backdrop-blur-sm shadow-lg"
+            className="btn-glow inline-block border-2 border-white/80 px-10 py-4 text-xs font-bold tracking-[0.2em] uppercase text-white hover:bg-white hover:text-amina-ink hover:border-white transition-all duration-500 ease-luxury bg-white/10 backdrop-blur-md shadow-luxury-sm rounded-full"
           >
             {t.cta}
           </Link>
@@ -106,15 +119,16 @@ export default async function HomePage({ params }: { params: { lang: string } })
       </section>
 
       {/* ================= ESSENCE SECTION ================= */}
-      <section className="relative py-20 px-6 bg-[#F4F1EA]">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative py-24 px-6 bg-amina-ivory overflow-hidden">
+        <div className="glow-orb w-[260px] h-[260px] bg-amina-rose/15 top-0 right-10 pointer-events-none" />
+        <div className="max-w-3xl mx-auto relative">
           <div className="text-center">
-            <span className="text-4xl text-[#D4A373] block mb-4">❦</span>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#2C2C2C] mb-4 tracking-tight">
+            <span className="text-4xl text-amina-gold block mb-4">❦</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-amina-ink mb-4 tracking-tight">
               {t.storyTitle}
             </h2>
-            <div className="w-12 h-[1px] bg-[#D4A373] mx-auto mb-6"></div>
-            <p className="text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
+            <div className="w-12 h-[1px] bg-amina-gold mx-auto mb-6"></div>
+            <p className="text-lg md:text-xl text-amina-stone font-light leading-relaxed max-w-2xl mx-auto italic font-serif">
               {t.storyText}
             </p>
           </div>
@@ -122,25 +136,25 @@ export default async function HomePage({ params }: { params: { lang: string } })
       </section>
 
       {/* ================= LATEST ARRIVALS GRID ================= */}
-      <section className="py-10 px-4 md:px-8 max-w-[1400px] mx-auto bg-[#F4F1EA]">
+      <section className="py-10 px-4 md:px-8 max-w-[1400px] mx-auto bg-amina-ivory">
         
-        {/* Section Heading */}
-        <div className="flex items-center justify-between mb-10 px-2">
-          <h2 className="text-2xl md:text-3xl font-serif text-black">
-            {t.latestArrivals}
-          </h2>
-          <Link href={`/${params.lang}/collection`} className="hidden md:block text-xs font-bold tracking-widest uppercase text-gray-500 hover:text-[#D4A373] transition">
+        <div className="flex items-end justify-between mb-12 px-2">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-serif text-amina-ink mb-1">
+              {t.latestArrivals}
+            </h2>
+            <p className="text-xs uppercase tracking-[0.2em] text-amina-stone">{t.latestSub}</p>
+          </div>
+          <Link href={`/${params.lang}/collection`} className="hidden md:block text-xs font-bold tracking-widest uppercase text-amina-stone hover:text-amina-gold transition-colors duration-300">
              {t.viewAll} →
           </Link>
         </div>
 
-        {/* Product Grid */}
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-14">
             {products.map((product: any) => {
-              
-              
-              let displayName = product.name; // Default: English
+
+              let displayName = product.name;
 
               if (params.lang === 'fr' && product.name_fr) {
                   displayName = product.name_fr; 
@@ -148,7 +162,6 @@ export default async function HomePage({ params }: { params: { lang: string } })
                   displayName = product.name_ar; 
               }
 
-              
               const fixedProduct = { ...product, name: displayName };
 
               return (
@@ -157,14 +170,13 @@ export default async function HomePage({ params }: { params: { lang: string } })
             })}
           </div>
         ) : (
-          <p className="text-center text-gray-400 py-20">Loading luxury pieces...</p>
+          <p className="text-center text-amina-stone py-20 font-serif italic">Loading luxury pieces...</p>
         )}
 
-        {/* Mobile View All Button */}
-        <div className="mt-12 text-center md:hidden">
+        <div className="mt-14 text-center md:hidden">
           <Link 
             href={`/${params.lang}/collection`}
-            className="inline-block border-b border-black pb-1 text-xs font-bold tracking-[0.2em] uppercase hover:text-[#D4A373] hover:border-[#D4A373] transition-colors"
+            className="inline-block border-b border-amina-ink pb-1 text-xs font-bold tracking-[0.2em] uppercase hover:text-amina-gold hover:border-amina-gold transition-colors"
           >
             {t.viewAll}
           </Link>

@@ -18,7 +18,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// 🔒 Password now comes from env, not hardcoded in the bundle logic.
+// 🔒 Password comes from env, not hardcoded in the bundle logic.
 // Add NEXT_PUBLIC_ADMIN_PASSWORD=yourpassword to .env.local
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "";
 
@@ -29,7 +29,7 @@ const translations = {
     total: "Total Orders",
     pending: "Pending",
     delivered: "Delivered",
-    addBtn: "➕ Add New Order",
+    addBtn: "Add New Order",
     name: "Customer Name *",
     wa: "WhatsApp Number",
     prod: "Product Name",
@@ -39,7 +39,7 @@ const translations = {
     price: "Price (MAD)",
     save: "SAVE ORDER",
     saving: "SAVING...",
-    recent: "📋 Recent Orders",
+    recent: "Recent Orders",
     empty: "No orders yet.",
     invoiceTitle: "INVOICE",
     billedTo: "Billed To",
@@ -49,31 +49,39 @@ const translations = {
     fallbackProd: "Luxury Apparel",
     footerMsg1: "Thank you for choosing AMINA.",
     footerMsg2: "Wear your elegance with pride.",
-    downloadInvoice: "📄 Download Invoice",
-    deleteBtn: "🗑️ Delete",
+    downloadInvoice: "Invoice",
+    deleteBtn: "Delete",
     deleteTitle: "Delete Order",
     cancelBtn: "Cancel",
     confirmDelete: "Are you sure you want to delete this order? This action cannot be undone.",
-    statusMap: { Pending: "Pending ⏳", Shipped: "Shipped 🚚", Delivered: "Delivered ✅", Cancelled: "Cancelled ❌" },
-    search: "🔍 Search orders...",
+    statusMap: { Pending: "Pending", Shipped: "Shipped", Delivered: "Delivered", Cancelled: "Cancelled" },
+    search: "Search orders...",
     allStatus: "All Statuses",
-    exportCSV: "⬇️ Export CSV",
-    analytics: "📊 Analytics",
+    exportCSV: "Export CSV",
+    analytics: "Analytics",
     totalRevenue: "Total Revenue",
     avgOrder: "Avg. Order Value",
     topProduct: "Top Product",
     monthlyRevenue: "Revenue by Month",
     noResults: "No orders match your search.",
-    wrongPassword: "❌ Wrong Password!",
-    deleteError: "⚠️ Error deleting order. Please try again.",
+    wrongPassword: "Wrong password",
+    deleteError: "Error deleting order. Please try again.",
     na: "N/A",
+    live: "Live",
+    lastUpdated: "Updated",
+    justNow: "just now",
+    secAgo: "s ago",
+    minAgo: "m ago",
+    unlock: "Unlock Panel",
+    restricted: "Restricted Access",
+    masterPass: "Enter Master Password",
   },
   fr: {
     title: "PANNEAU DE GESTION",
     total: "Total",
     pending: "En attente",
     delivered: "Livré",
-    addBtn: "➕ Ajouter une Commande",
+    addBtn: "Ajouter une Commande",
     name: "Nom du Client *",
     wa: "Numéro WhatsApp",
     prod: "Nom du Produit",
@@ -83,7 +91,7 @@ const translations = {
     price: "Prix (MAD)",
     save: "ENREGISTRER",
     saving: "ENREGISTREMENT...",
-    recent: "📋 Commandes Récentes",
+    recent: "Commandes Récentes",
     empty: "Aucune commande pour le moment.",
     invoiceTitle: "FACTURE",
     billedTo: "Facturé à",
@@ -93,31 +101,39 @@ const translations = {
     fallbackProd: "Article de Luxe",
     footerMsg1: "Merci pour votre confiance.",
     footerMsg2: "Portez votre élégance avec fierté.",
-    downloadInvoice: "📄 Télécharger",
-    deleteBtn: "🗑️ Supprimer",
+    downloadInvoice: "Facture",
+    deleteBtn: "Supprimer",
     deleteTitle: "Supprimer la commande",
     cancelBtn: "Annuler",
     confirmDelete: "Voulez-vous vraiment supprimer cette commande ? Cette action est irréversible.",
-    statusMap: { Pending: "En attente ⏳", Shipped: "Expédié 🚚", Delivered: "Livré ✅", Cancelled: "Annulé ❌" },
-    search: "🔍 Rechercher des commandes...",
+    statusMap: { Pending: "En attente", Shipped: "Expédié", Delivered: "Livré", Cancelled: "Annulé" },
+    search: "Rechercher des commandes...",
     allStatus: "Tous les statuts",
-    exportCSV: "⬇️ Exporter CSV",
-    analytics: "📊 Statistiques",
+    exportCSV: "Exporter CSV",
+    analytics: "Statistiques",
     totalRevenue: "Revenu total",
     avgOrder: "Panier moyen",
     topProduct: "Produit populaire",
     monthlyRevenue: "Revenu par mois",
     noResults: "Aucune commande ne correspond à votre recherche.",
-    wrongPassword: "❌ Mot de passe incorrect !",
-    deleteError: "⚠️ Erreur lors de la suppression. Réessayez.",
+    wrongPassword: "Mot de passe incorrect",
+    deleteError: "Erreur lors de la suppression. Réessayez.",
     na: "N/A",
+    live: "En direct",
+    lastUpdated: "Mis à jour",
+    justNow: "à l'instant",
+    secAgo: "s",
+    minAgo: "min",
+    unlock: "Déverrouiller",
+    restricted: "Accès restreint",
+    masterPass: "Entrez le mot de passe",
   },
   ar: {
     title: "لوحة إدارة الطلبات",
     total: "إجمالي الطلبات",
     pending: "قيد الانتظار",
     delivered: "تم التوصيل",
-    addBtn: "➕ إضافة طلب جديد",
+    addBtn: "إضافة طلب جديد",
     name: "اسم العميل *",
     wa: "رقم الواتساب",
     prod: "اسم المنتج",
@@ -127,7 +143,7 @@ const translations = {
     price: "السعر (درهم مغربي)",
     save: "حفظ الطلب",
     saving: "جاري الحفظ...",
-    recent: "📋 الطلبات الأخيرة",
+    recent: "الطلبات الأخيرة",
     empty: "لا توجد طلبات بعد.",
     invoiceTitle: "فاتورة",
     billedTo: "فاتورة لـ",
@@ -137,24 +153,32 @@ const translations = {
     fallbackProd: "ملابس فاخرة",
     footerMsg1: "شكراً لثقتكم في أمينة.",
     footerMsg2: "ارتدي أناقتك بكل فخر.",
-    downloadInvoice: "📄 تحميل الفاتورة",
-    deleteBtn: "🗑️ حذف",
+    downloadInvoice: "الفاتورة",
+    deleteBtn: "حذف",
     deleteTitle: "حذف الطلب",
     cancelBtn: "إلغاء",
     confirmDelete: "هل أنت متأكد أنك تريد حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
-    statusMap: { Pending: "قيد الانتظار ⏳", Shipped: "تم الشحن 🚚", Delivered: "تم التوصيل ✅", Cancelled: "ملغي ❌" },
-    search: "🔍 البحث في الطلبات...",
+    statusMap: { Pending: "قيد الانتظار", Shipped: "تم الشحن", Delivered: "تم التوصيل", Cancelled: "ملغي" },
+    search: "البحث في الطلبات...",
     allStatus: "كل الحالات",
-    exportCSV: "⬇️ تصدير CSV",
-    analytics: "📊 التحليلات",
+    exportCSV: "تصدير CSV",
+    analytics: "التحليلات",
     totalRevenue: "إجمالي الإيرادات",
     avgOrder: "متوسط قيمة الطلب",
     topProduct: "المنتج الأكثر مبيعاً",
     monthlyRevenue: "الإيرادات الشهرية",
     noResults: "لا توجد طلبات مطابقة لبحثك.",
-    wrongPassword: "❌ كلمة مرور خاطئة!",
-    deleteError: "⚠️ خطأ أثناء الحذف. حاول مرة أخرى.",
+    wrongPassword: "كلمة مرور خاطئة",
+    deleteError: "خطأ أثناء الحذف. حاول مرة أخرى.",
     na: "غير متوفر",
+    live: "مباشر",
+    lastUpdated: "آخر تحديث",
+    justNow: "الآن",
+    secAgo: "ث",
+    minAgo: "د",
+    unlock: "فتح اللوحة",
+    restricted: "وصول مقيد",
+    masterPass: "أدخل كلمة المرور الرئيسية",
   },
 };
 
@@ -164,6 +188,29 @@ function parsePrice(priceStr: string | undefined | null): number {
   const cleaned = String(priceStr).replace(/[^0-9.]/g, "");
   const n = parseFloat(cleaned);
   return isNaN(n) ? 0 : n;
+}
+
+// Smooth count-up for stat numbers — small automatic polish, no extra deps
+function useCountUp(value: number, duration = 700) {
+  const [display, setDisplay] = useState(0);
+  const prevRef = useRef(0);
+  useEffect(() => {
+    const from = prevRef.current;
+    const to = value;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(from + (to - from) * eased);
+      if (progress < 1) raf = requestAnimationFrame(tick);
+      else prevRef.current = to;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+  return display;
 }
 
 // Lightweight toast (replaces alert())
@@ -176,12 +223,29 @@ function Toast({ message, type, onClose }: { message: string; type: "error" | "s
   return (
     <div
       className={
-        "fixed bottom-6 right-6 z-[100] px-5 py-3 rounded-md shadow-lg text-sm font-medium text-white " +
-        (type === "error" ? "bg-red-600" : "bg-green-600")
+        "fixed bottom-6 right-6 z-[100] px-5 py-3.5 rounded-xl text-sm font-medium text-white backdrop-blur-xl border animate-toast-in " +
+        (type === "error"
+          ? "bg-red-500/90 border-red-400/40 shadow-[0_8px_30px_rgba(220,38,38,0.45)]"
+          : "bg-gradient-to-br from-[#d4af6a] to-[#a3823f] border-[#e8cd94]/40 shadow-[0_8px_30px_rgba(212,175,106,0.45)]")
       }
     >
       {message}
     </div>
+  );
+}
+
+function StatusPill({ status, label }: { status: string; label: string }) {
+  const styles: Record<string, string> = {
+    Pending: "bg-amber-400/10 text-amber-300 border-amber-400/30",
+    Shipped: "bg-sky-400/10 text-sky-300 border-sky-400/30",
+    Delivered: "bg-emerald-400/10 text-emerald-300 border-emerald-400/30",
+    Cancelled: "bg-red-400/10 text-red-300 border-red-400/30",
+  };
+  return (
+    <span className={"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border " + (styles[status] || styles.Pending)}>
+      <span className="w-1.5 h-1.5 rounded-full bg-current" />
+      {label}
+    </span>
   );
 }
 
@@ -222,9 +286,51 @@ export default function AdminDashboard({ params }: any) {
   // 🔔 Toast State
   const [toast, setToast] = useState<{ message: string; type: "error" | "success" } | null>(null);
 
+  // ⚡ Live sync status (automatic realtime updates)
+  const [isLive, setIsLive] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [nowTick, setNowTick] = useState(Date.now());
+
   useEffect(() => {
     if (isAuthenticated) fetchOrders();
   }, [isAuthenticated]);
+
+  // 📡 Realtime subscription — orders sync automatically across devices, no manual refresh
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const channel = supabase
+      .channel("orders-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, (payload) => {
+        setLastUpdated(new Date());
+        if (payload.eventType === "INSERT") {
+          setOrders((prev) => (prev.some((o) => o.id === (payload.new as any).id) ? prev : [payload.new, ...prev]));
+        } else if (payload.eventType === "UPDATE") {
+          setOrders((prev) => prev.map((o) => (o.id === (payload.new as any).id ? payload.new : o)));
+        } else if (payload.eventType === "DELETE") {
+          setOrders((prev) => prev.filter((o) => o.id !== (payload.old as any).id));
+        }
+      })
+      .subscribe((status) => setIsLive(status === "SUBSCRIBED"));
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAuthenticated]);
+
+  // Relative-time ticker for "Updated Xs ago"
+  useEffect(() => {
+    const id = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const relativeUpdated = useMemo(() => {
+    if (!lastUpdated) return null;
+    const diff = Math.max(0, Math.floor((nowTick - lastUpdated.getTime()) / 1000));
+    if (diff < 3) return t.justNow;
+    if (diff < 60) return diff + t.secAgo;
+    return Math.floor(diff / 60) + t.minAgo;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nowTick, lastUpdated]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,6 +346,7 @@ export default function AdminDashboard({ params }: any) {
     setOrdersLoading(true);
     const { data } = await supabase.from("orders").select("*").order("id", { ascending: false });
     if (data) setOrders(data);
+    setLastUpdated(new Date());
     setOrdersLoading(false);
   }
 
@@ -256,7 +363,7 @@ export default function AdminDashboard({ params }: any) {
     if (!error) {
       setCustomerName(""); setPhone(""); setProduct(""); setColor(""); setCity(""); setPrice("");
       fetchOrders();
-      setToast({ message: "✅ Order saved", type: "success" });
+      setToast({ message: "Order saved", type: "success" });
     } else {
       setToast({ message: t.deleteError, type: "error" });
     }
@@ -342,6 +449,12 @@ export default function AdminDashboard({ params }: any) {
     return { totalRevenue, avgOrder, topProduct, monthlyData };
   }, [orders, t.fallbackProd, t.na]);
 
+  const totalCount = useCountUp(orders.length);
+  const pendingCount = useCountUp(orders.filter((o) => o.status === "Pending").length);
+  const deliveredCount = useCountUp(orders.filter((o) => o.status === "Delivered").length);
+  const revenueCount = useCountUp(analytics.totalRevenue);
+  const avgCount = useCountUp(analytics.avgOrder);
+
   // ⬇️ CSV Export
   function exportCSV() {
     const headers = ["ID", "Customer", "Phone", "Product", "Color", "Size", "City", "Price", "Status", "Date"];
@@ -370,85 +483,126 @@ export default function AdminDashboard({ params }: any) {
     URL.revokeObjectURL(url);
   }
 
+  const goldGradText = "bg-gradient-to-r from-[#f3dfa8] via-[#d4af6a] to-[#a3823f] bg-clip-text text-transparent";
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#f4f1ea] flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-md max-w-sm w-full text-center border border-gray-200">
-          <h1 className="text-3xl font-bold tracking-widest mb-6" style={{ fontFamily: "var(--font-playfair)" }}>AMINA</h1>
-          <p className="text-sm text-gray-500 mb-6 uppercase tracking-wider">Restricted Access</p>
-          <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} placeholder="Enter Master Password" className="w-full border p-3 rounded text-center tracking-widest focus:outline-none focus:border-black mb-4" />
-          {loginError && <p className="text-red-600 text-xs mb-4">{loginError}</p>}
-          <button type="submit" className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition uppercase tracking-widest text-sm">Unlock Panel</button>
+      <div className="min-h-screen bg-[#0b0908] flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full bg-[#d4af6a]/10 blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 w-[520px] h-[520px] rounded-full bg-[#d4af6a]/10 blur-[120px]" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #d4af6a 1px, transparent 0)", backgroundSize: "26px 26px" }}
+        />
+        <form
+          onSubmit={handleLogin}
+          className="relative z-10 w-full max-w-sm rounded-2xl border border-[#d4af6a]/20 bg-white/[0.03] backdrop-blur-2xl p-10 text-center shadow-[0_20px_60px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)]"
+        >
+          <div className="mx-auto mb-5 w-14 h-14 rounded-full border border-[#d4af6a]/30 flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4af6a" strokeWidth="1.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h1 className={"text-3xl font-bold tracking-[0.3em] mb-2 " + goldGradText} style={{ fontFamily: "var(--font-playfair)" }}>AMINA</h1>
+          <p className="text-xs text-[#a89e8e] mb-8 uppercase tracking-[0.25em]">{t.restricted}</p>
+          <input
+            type="password"
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            placeholder={t.masterPass}
+            className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] placeholder:text-[#6b6459] p-3.5 rounded-xl text-center tracking-widest focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all mb-4"
+          />
+          {loginError && <p className="text-red-400 text-xs mb-4">{loginError}</p>}
+          <button
+            type="submit"
+            className="relative w-full overflow-hidden bg-gradient-to-r from-[#e8cd94] via-[#d4af6a] to-[#a3823f] text-[#1a1410] py-3.5 rounded-xl font-bold tracking-[0.2em] text-sm uppercase shadow-[0_10px_30px_rgba(212,175,106,0.35)] hover:shadow-[0_14px_40px_rgba(212,175,106,0.5)] hover:-translate-y-0.5 active:translate-y-0 transition-all"
+          >
+            {t.unlock}
+          </button>
         </form>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f1ea] p-4 md:p-8 font-sans text-black relative" dir={isRtl ? "rtl" : "ltr"}>
-      <div className="max-w-6xl mx-auto">
-        <div className={"mb-8 flex flex-col md:flex-row justify-between items-center " + (isRtl ? "md:text-right" : "md:text-left")}>
+    <div className="min-h-screen bg-[#0b0908] text-[#f5efe4] relative" dir={isRtl ? "rtl" : "ltr"}>
+      {/* ambient glow背景 */}
+      <div className="pointer-events-none fixed -top-32 left-1/4 w-[600px] h-[600px] rounded-full bg-[#d4af6a]/[0.06] blur-[140px]" />
+      <div className="pointer-events-none fixed bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#d4af6a]/[0.05] blur-[140px]" />
+
+      <div className="relative max-w-7xl mx-auto p-4 md:p-8">
+        {/* HEADER */}
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-widest mb-2" style={{ fontFamily: "var(--font-playfair)" }}>AMINA</h1>
-            <p className="text-sm text-gray-600 tracking-wider uppercase">{t.title}</p>
+            <h1 className={"text-3xl md:text-4xl font-bold tracking-[0.25em] mb-1.5 " + goldGradText} style={{ fontFamily: "var(--font-playfair)" }}>AMINA</h1>
+            <p className="text-xs text-[#a89e8e] tracking-[0.2em] uppercase">{t.title}</p>
+          </div>
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-xl text-xs text-[#a89e8e]">
+            <span className={"w-2 h-2 rounded-full " + (isLive ? "bg-emerald-400 animate-pulse-dot" : "bg-[#6b6459]")} />
+            <span className="font-medium text-[#d8cfc0]">{isLive ? t.live : "…"}</span>
+            {relativeUpdated && <span className="opacity-70">· {t.lastUpdated} {relativeUpdated}</span>}
           </div>
         </div>
 
-        {/* 📊 QUICK STATS BOXES */}
-        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6">
-          <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 text-center">
-            <p className="text-xs md:text-sm text-gray-500 uppercase tracking-wide">{t.total}</p>
-            <p className="text-2xl md:text-3xl font-bold mt-1">{orders.length}</p>
+        {/* KPI CARDS */}
+        <div className="grid grid-cols-3 gap-3 md:gap-5 mb-6">
+          <div className="group relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 md:p-6 text-center overflow-hidden hover:border-[#d4af6a]/30 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#d4af6a]/50 to-transparent" />
+            <p className="text-[11px] md:text-xs text-[#a89e8e] uppercase tracking-widest">{t.total}</p>
+            <p className="text-2xl md:text-4xl font-bold mt-2 text-[#f5efe4]">{Math.round(totalCount)}</p>
           </div>
-          <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 text-center">
-            <p className="text-xs md:text-sm text-yellow-600 uppercase tracking-wide">{t.pending}</p>
-            <p className="text-2xl md:text-3xl font-bold mt-1 text-yellow-600">
-              {orders.filter((o) => o.status === "Pending").length}
-            </p>
+          <div className="group relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 md:p-6 text-center overflow-hidden hover:border-amber-400/30 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+            <p className="text-[11px] md:text-xs text-amber-300/80 uppercase tracking-widest">{t.pending}</p>
+            <p className="text-2xl md:text-4xl font-bold mt-2 text-amber-300">{Math.round(pendingCount)}</p>
           </div>
-          <div className="bg-white p-4 rounded-md shadow-sm border border-gray-200 text-center">
-            <p className="text-xs md:text-sm text-green-600 uppercase tracking-wide">{t.delivered}</p>
-            <p className="text-2xl md:text-3xl font-bold mt-1 text-green-600">
-              {orders.filter((o) => o.status === "Delivered").length}
-            </p>
+          <div className="group relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4 md:p-6 text-center overflow-hidden hover:border-emerald-400/30 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent" />
+            <p className="text-[11px] md:text-xs text-emerald-300/80 uppercase tracking-widest">{t.delivered}</p>
+            <p className="text-2xl md:text-4xl font-bold mt-2 text-emerald-300">{Math.round(deliveredCount)}</p>
           </div>
         </div>
 
-        {/* 📈 ANALYTICS SECTION */}
-        <div className="bg-white p-6 rounded-md shadow-sm border border-gray-200 mb-8">
-          <h2 className="text-lg font-semibold mb-6 border-b pb-2">{t.analytics}</h2>
+        {/* ANALYTICS */}
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 mb-8 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+          <h2 className="text-lg font-semibold mb-6 pb-3 border-b border-white/10 flex items-center gap-2">
+            <span className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#e8cd94] to-[#a3823f]" />
+            {t.analytics}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-[#f4f1ea] p-4 rounded-md border border-[#c9a871]/30 text-center">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">{t.totalRevenue}</p>
-              <p className="text-xl md:text-2xl font-bold mt-1" style={{ color: "#c9a871" }}>
-                {analytics.totalRevenue.toLocaleString()} MAD
-              </p>
+            <div className="rounded-xl border border-[#d4af6a]/15 bg-gradient-to-br from-[#d4af6a]/[0.08] to-transparent p-4 text-center">
+              <p className="text-[11px] text-[#a89e8e] uppercase tracking-widest">{t.totalRevenue}</p>
+              <p className={"text-xl md:text-2xl font-bold mt-1.5 " + goldGradText}>{Math.round(revenueCount).toLocaleString()} MAD</p>
             </div>
-            <div className="bg-[#f4f1ea] p-4 rounded-md border border-[#c9a871]/30 text-center">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">{t.avgOrder}</p>
-              <p className="text-xl md:text-2xl font-bold mt-1" style={{ color: "#c9a871" }}>
-                {analytics.avgOrder.toFixed(0)} MAD
-              </p>
+            <div className="rounded-xl border border-[#d4af6a]/15 bg-gradient-to-br from-[#d4af6a]/[0.08] to-transparent p-4 text-center">
+              <p className="text-[11px] text-[#a89e8e] uppercase tracking-widest">{t.avgOrder}</p>
+              <p className={"text-xl md:text-2xl font-bold mt-1.5 " + goldGradText}>{Math.round(avgCount).toLocaleString()} MAD</p>
             </div>
-            <div className="bg-[#f4f1ea] p-4 rounded-md border border-[#c9a871]/30 text-center">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">{t.topProduct}</p>
-              <p className="text-lg md:text-xl font-bold mt-1 truncate" style={{ color: "#c9a871" }}>
-                {analytics.topProduct}
-              </p>
+            <div className="rounded-xl border border-[#d4af6a]/15 bg-gradient-to-br from-[#d4af6a]/[0.08] to-transparent p-4 text-center">
+              <p className="text-[11px] text-[#a89e8e] uppercase tracking-widest">{t.topProduct}</p>
+              <p className={"text-lg md:text-xl font-bold mt-1.5 truncate " + goldGradText}>{analytics.topProduct}</p>
             </div>
           </div>
 
           {analytics.monthlyData.length > 0 && (
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">{t.monthlyRevenue}</p>
+              <p className="text-[11px] text-[#a89e8e] uppercase tracking-widest mb-3">{t.monthlyRevenue}</p>
               <div style={{ width: "100%", height: 220 }}>
                 <ResponsiveContainer>
                   <BarChart data={analytics.monthlyData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e0d5" />
-                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip formatter={(value) => `${Number(value ?? 0).toLocaleString()} MAD`} />
-                    <Bar dataKey="revenue" fill="#c9a871" radius={[4, 4, 0, 0]} />
+                    <defs>
+                      <linearGradient id="goldBar" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#e8cd94" />
+                        <stop offset="100%" stopColor="#a3823f" />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#a89e8e" }} axisLine={{ stroke: "rgba(255,255,255,0.1)" }} tickLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: "#a89e8e" }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      formatter={(value) => `${Number(value ?? 0).toLocaleString()} MAD`}
+                      contentStyle={{ background: "#171310", border: "1px solid rgba(212,175,106,0.25)", borderRadius: 10, color: "#f5efe4" }}
+                      cursor={{ fill: "rgba(212,175,106,0.06)" }}
+                    />
+                    <Bar dataKey="revenue" fill="url(#goldBar)" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -456,50 +610,87 @@ export default function AdminDashboard({ params }: any) {
           )}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-
-          <div className="lg:col-span-1 bg-white p-6 rounded-md shadow-sm border border-gray-200 h-fit">
-            <h2 className="text-lg font-semibold mb-6 border-b pb-2">{t.addBtn}</h2>
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* NEW ORDER FORM */}
+          <div className="lg:col-span-1 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 h-fit shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <h2 className="text-lg font-semibold mb-6 pb-3 border-b border-white/10 flex items-center gap-2">
+              <span className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#e8cd94] to-[#a3823f]" />
+              {t.addBtn}
+            </h2>
             <form onSubmit={addOrder} className="space-y-4 text-sm">
-              <div><label className="block text-gray-600 mb-1">{t.name}</label><input required type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" /></div>
-              <div><label className="block text-gray-600 mb-1">{t.wa}</label><input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" dir="ltr" /></div>
-              <div><label className="block text-gray-600 mb-1">{t.prod}</label><input list="products" type="text" value={product} onChange={(e) => setProduct(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" /><datalist id="products"><option value="Black Abaya" /><option value="Beige Kaftan" /></datalist></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="block text-gray-600 mb-1">{t.color}</label><input type="text" value={color} onChange={(e) => setColor(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" /></div>
-                <div><label className="block text-gray-600 mb-1">{t.size}</label><select value={size} onChange={(e) => setSize(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" dir="ltr"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>XXXL</option></select></div>
+              <div>
+                <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.name}</label>
+                <input required type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" />
               </div>
-              <div><label className="block text-gray-600 mb-1">{t.price}</label><input type="text" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" placeholder="e.g. 450" dir="ltr"/></div>
-              <div><label className="block text-gray-600 mb-1">{t.city}</label><textarea value={city} onChange={(e) => setCity(e.target.value)} className="w-full border p-2 rounded focus:outline-none focus:border-black" rows={2}></textarea></div>
-              <button disabled={loading} type="submit" className="w-full bg-black text-white py-3 mt-4 rounded-sm font-semibold tracking-wider hover:bg-gray-800 transition uppercase">{loading ? t.saving : t.save}</button>
+              <div>
+                <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.wa}</label>
+                <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" dir="ltr" />
+              </div>
+              <div>
+                <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.prod}</label>
+                <input list="products" type="text" value={product} onChange={(e) => setProduct(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" />
+                <datalist id="products"><option value="Black Abaya" /><option value="Beige Kaftan" /></datalist>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.color}</label>
+                  <input type="text" value={color} onChange={(e) => setColor(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.size}</label>
+                  <select value={size} onChange={(e) => setSize(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 transition-all" dir="ltr">
+                    <option className="bg-[#171310]">S</option><option className="bg-[#171310]">M</option><option className="bg-[#171310]">L</option><option className="bg-[#171310]">XL</option><option className="bg-[#171310]">XXL</option><option className="bg-[#171310]">XXXL</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.price}</label>
+                <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" placeholder="e.g. 450" dir="ltr" />
+              </div>
+              <div>
+                <label className="block text-[#a89e8e] mb-1.5 text-xs uppercase tracking-wide">{t.city}</label>
+                <textarea value={city} onChange={(e) => setCity(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2.5 rounded-lg focus:outline-none focus:border-[#d4af6a]/60 focus:bg-white/[0.06] transition-all" rows={2}></textarea>
+              </div>
+              <button
+                disabled={loading}
+                type="submit"
+                className="w-full bg-gradient-to-r from-[#e8cd94] via-[#d4af6a] to-[#a3823f] text-[#1a1410] py-3.5 mt-2 rounded-xl font-bold tracking-[0.15em] text-sm uppercase shadow-[0_10px_30px_rgba(212,175,106,0.3)] hover:shadow-[0_14px_38px_rgba(212,175,106,0.45)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0 transition-all"
+              >
+                {loading ? t.saving : t.save}
+              </button>
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-white p-6 rounded-md shadow-sm border border-gray-200 overflow-x-auto">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 border-b pb-4">
-              <h2 className="text-lg font-semibold">{t.recent}</h2>
+          {/* ORDERS LIST */}
+          <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6 pb-4 border-b border-white/10">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <span className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#e8cd94] to-[#a3823f]" />
+                {t.recent}
+              </h2>
               <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t.search}
-                  className="border p-2 rounded text-sm focus:outline-none focus:border-black w-full sm:w-48"
+                  className="bg-white/[0.04] border border-white/10 text-[#f5efe4] placeholder:text-[#6b6459] p-2 rounded-lg text-sm focus:outline-none focus:border-[#d4af6a]/60 transition-all w-full sm:w-48"
                 />
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="border p-2 rounded text-sm focus:outline-none focus:border-black"
+                  className="bg-white/[0.04] border border-white/10 text-[#f5efe4] p-2 rounded-lg text-sm focus:outline-none focus:border-[#d4af6a]/60 transition-all"
                   dir={isRtl ? "rtl" : "ltr"}
                 >
-                  <option value="All">{t.allStatus}</option>
-                  <option value="Pending">{t.statusMap.Pending}</option>
-                  <option value="Shipped">{t.statusMap.Shipped}</option>
-                  <option value="Delivered">{t.statusMap.Delivered}</option>
-                  <option value="Cancelled">{t.statusMap.Cancelled}</option>
+                  <option className="bg-[#171310]" value="All">{t.allStatus}</option>
+                  <option className="bg-[#171310]" value="Pending">{t.statusMap.Pending}</option>
+                  <option className="bg-[#171310]" value="Shipped">{t.statusMap.Shipped}</option>
+                  <option className="bg-[#171310]" value="Delivered">{t.statusMap.Delivered}</option>
+                  <option className="bg-[#171310]" value="Cancelled">{t.statusMap.Cancelled}</option>
                 </select>
                 <button
                   onClick={exportCSV}
-                  className="text-sm bg-[#c9a871] text-white px-3 py-2 rounded hover:bg-[#b08d55] transition font-medium whitespace-nowrap"
+                  className="text-sm bg-white/[0.06] border border-white/10 text-[#e8cd94] px-3.5 py-2 rounded-lg hover:bg-white/[0.1] hover:border-[#d4af6a]/40 transition-all font-medium whitespace-nowrap"
                 >
                   {t.exportCSV}
                 </button>
@@ -507,46 +698,62 @@ export default function AdminDashboard({ params }: any) {
             </div>
 
             {ordersLoading ? (
-              <div className="space-y-4 animate-pulse">
+              <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-16 bg-gray-100 rounded" />
+                  <div key={i} className="h-16 rounded-xl bg-white/[0.03] animate-shimmer" />
                 ))}
               </div>
             ) : filteredOrders.length === 0 ? (
-              <p className="text-gray-500 text-sm text-center py-8">
+              <p className="text-[#a89e8e] text-sm text-center py-12">
                 {orders.length === 0 ? t.empty : t.noResults}
               </p>
             ) : (
-              filteredOrders.map((order) => (
-                <div key={order.id} className="border-b pb-4 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-4">
-                  <div>
-                    <p className="font-semibold text-lg">#{order.id} - {order.customer_name}</p>
-                    <p className="text-gray-600 text-sm mt-1">
-                      <span className="font-medium text-black">{order.product}</span>
-                      {order.color ? " • " + order.color : ""}
-                      {" • Size " + order.size}
-                      {order.city ? " • " + order.city : ""}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1 font-medium">
-                      {order.price ? "Price: " + order.price + " • " : ""}
-                      <span dir="ltr">{order.phone}</span>
-                    </p>
-                  </div>
+              <div className="space-y-3">
+                {filteredOrders.map((order) => (
+                  <div key={order.id} className="group rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.045] hover:border-[#d4af6a]/25 p-4 flex flex-col md:flex-row justify-between md:items-center gap-4 transition-all duration-200">
+                    <div>
+                      <p className="font-semibold text-base text-[#f5efe4]">#{order.id} — {order.customer_name}</p>
+                      <p className="text-[#a89e8e] text-sm mt-1">
+                        <span className="font-medium text-[#d8cfc0]">{order.product}</span>
+                        {order.color ? " • " + order.color : ""}
+                        {" • Size " + order.size}
+                        {order.city ? " • " + order.city : ""}
+                      </p>
+                      <p className="text-xs text-[#8c8375] mt-1 font-medium">
+                        {order.price ? <span className="text-[#d4af6a]">{order.price}</span> : ""}
+                        {order.price ? " • " : ""}
+                        <span dir="ltr">{order.phone}</span>
+                      </p>
+                    </div>
 
-                  <div className={"flex flex-col gap-2 " + (isRtl ? "md:items-start" : "md:items-end")}>
-                      <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)} className="text-xs border px-2 py-1 rounded hover:bg-gray-50 transition w-full md:w-fit outline-none cursor-pointer font-semibold" dir={isRtl ? "rtl" : "ltr"}><option value="Pending">{t.statusMap.Pending}</option><option value="Shipped">{t.statusMap.Shipped}</option><option value="Delivered">{t.statusMap.Delivered}</option><option value="Cancelled">{t.statusMap.Cancelled}</option></select>
+                    <div className={"flex flex-col gap-2 " + (isRtl ? "md:items-start" : "md:items-end")}>
+                      <div className="flex items-center gap-2">
+                        <StatusPill status={order.status} label={(t.statusMap as any)[order.status] || order.status} />
+                        <select
+                          value={order.status}
+                          onChange={(e) => updateStatus(order.id, e.target.value)}
+                          className="text-xs bg-white/[0.04] border border-white/10 text-[#a89e8e] px-2 py-1 rounded-md hover:border-[#d4af6a]/40 transition-all outline-none cursor-pointer"
+                          dir={isRtl ? "rtl" : "ltr"}
+                        >
+                          <option className="bg-[#171310]" value="Pending">{t.statusMap.Pending}</option>
+                          <option className="bg-[#171310]" value="Shipped">{t.statusMap.Shipped}</option>
+                          <option className="bg-[#171310]" value="Delivered">{t.statusMap.Delivered}</option>
+                          <option className="bg-[#171310]" value="Cancelled">{t.statusMap.Cancelled}</option>
+                        </select>
+                      </div>
 
                       <div className="flex gap-2">
-                        <button onClick={() => setOrderToDelete(order.id)} className="text-xs bg-white text-red-600 border border-red-200 px-3 py-1 rounded hover:bg-red-50 transition font-medium shadow-sm">
+                        <button onClick={() => setOrderToDelete(order.id)} className="text-xs bg-red-500/10 text-red-300 border border-red-400/25 px-3 py-1.5 rounded-lg hover:bg-red-500/20 transition-all font-medium">
                           {t.deleteBtn}
                         </button>
-                        <button onClick={() => generatePDF(order)} className="text-xs bg-[#c9a871] text-white px-3 py-1 rounded hover:bg-[#b08d55] transition font-medium shadow-sm">
+                        <button onClick={() => generatePDF(order)} className="text-xs bg-gradient-to-r from-[#e8cd94] to-[#a3823f] text-[#1a1410] px-3 py-1.5 rounded-lg hover:shadow-[0_6px_18px_rgba(212,175,106,0.4)] transition-all font-semibold">
                           {t.downloadInvoice}
                         </button>
                       </div>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -557,24 +764,24 @@ export default function AdminDashboard({ params }: any) {
 
       {/* 💎 DELETE CONFIRMATION MODAL */}
       {orderToDelete !== null && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity">
-          <div className="bg-[#f4f1ea] border border-[#c9a871]/30 p-8 rounded-sm shadow-2xl max-w-sm w-full text-center relative" dir={isRtl ? "rtl" : "ltr"}>
-            <h3 className="text-2xl font-bold mb-3 tracking-wider" style={{ fontFamily: "var(--font-playfair)", color: "#2c2c2c" }}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity">
+          <div className="bg-[#151110] border border-[#d4af6a]/20 p-8 rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.6)] max-w-sm w-full text-center relative" dir={isRtl ? "rtl" : "ltr"}>
+            <h3 className={"text-2xl font-bold mb-3 tracking-wider " + goldGradText} style={{ fontFamily: "var(--font-playfair)" }}>
               {t.deleteTitle}
             </h3>
-            <p className="text-gray-600 text-sm mb-8 leading-relaxed">
+            <p className="text-[#a89e8e] text-sm mb-8 leading-relaxed">
               {t.confirmDelete}
             </p>
             <div className="flex gap-4 justify-center">
               <button
                 onClick={() => setOrderToDelete(null)}
-                className="px-6 py-2 text-sm font-medium border border-gray-400 text-gray-700 rounded-sm hover:bg-gray-100 transition"
+                className="px-6 py-2.5 text-sm font-medium border border-white/15 text-[#d8cfc0] rounded-xl hover:bg-white/5 transition-all"
               >
                 {t.cancelBtn}
               </button>
               <button
                 onClick={executeDelete}
-                className="px-6 py-2 text-sm font-medium bg-red-600 text-white rounded-sm hover:bg-red-700 transition shadow-sm"
+                className="px-6 py-2.5 text-sm font-medium bg-red-600 text-white rounded-xl hover:bg-red-500 transition-all shadow-[0_8px_24px_rgba(220,38,38,0.35)]"
               >
                 {t.deleteBtn}
               </button>
@@ -583,7 +790,7 @@ export default function AdminDashboard({ params }: any) {
         </div>
       )}
 
-      {/* 🧾 INVOICE (unchanged from original) */}
+      {/* 🧾 INVOICE — kept light & print-elegant, unchanged in structure */}
       {invoiceData && (
         <div className="fixed top-[-9999px] left-[-9999px]">
           <div ref={invoiceRef} className="p-12 w-[800px] text-[#2c2c2c] relative" style={{ backgroundColor: "#f4f1ea" }} dir={isRtl ? "rtl" : "ltr"}>
@@ -655,6 +862,30 @@ export default function AdminDashboard({ params }: any) {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @keyframes pulseDot {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
+          50% { box-shadow: 0 0 0 5px rgba(52, 211, 153, 0); }
+        }
+        .animate-pulse-dot { animation: pulseDot 2s infinite; }
+
+        @keyframes toastIn {
+          from { opacity: 0; transform: translateY(12px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-toast-in { animation: toastIn 0.25s ease-out; }
+
+        @keyframes shimmer {
+          0% { background-position: -400px 0; }
+          100% { background-position: 400px 0; }
+        }
+        .animate-shimmer {
+          background-image: linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.08) 40px, rgba(255,255,255,0.03) 80px);
+          background-size: 800px 100%;
+          animation: shimmer 1.6s infinite linear;
+        }
+      `}</style>
     </div>
   );
 }

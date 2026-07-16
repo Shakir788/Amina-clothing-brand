@@ -21,7 +21,6 @@ export default function CheckoutPage() {
     city: 'Casablanca', 
   })
 
-  // ✨ NAYA: Loading aur Button Disable karne ke liye
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const translations = {
@@ -36,7 +35,7 @@ export default function CheckoutPage() {
       subtotal: "Subtotal",
       total: "Total",
       confirmBtn: "Confirm Order on WhatsApp",
-      processingBtn: "Processing Order...", // Naya translation
+      processingBtn: "Processing Order...",
       emptyCart: "Your Cart is Empty 😔",
       goShop: "Go Shopping",
       shippingNote: "*Shipping charges may apply based on your city.",
@@ -53,7 +52,7 @@ export default function CheckoutPage() {
       subtotal: "Sous-total",
       total: "Total",
       confirmBtn: "Confirmer sur WhatsApp",
-      processingBtn: "Traitement en cours...", // Naya translation
+      processingBtn: "Traitement en cours...",
       emptyCart: "Votre panier est vide 😔",
       goShop: "Aller à la boutique",
       shippingNote: "*Des frais de livraison peuvent s'appliquer selon votre ville.",
@@ -70,7 +69,7 @@ export default function CheckoutPage() {
       subtotal: "المجموع الفرعي",
       total: "المجموع",
       confirmBtn: "تأكيد الطلب عبر واتساب",
-      processingBtn: "جاري المعالجة...", // Naya translation
+      processingBtn: "جاري المعالجة...",
       emptyCart: "عربة التسوق فارغة 😔",
       goShop: "اذهب للتسوق",
       shippingNote: "*قد يتم تطبيق رسوم الشحن حسب مدينتك.",
@@ -82,23 +81,20 @@ export default function CheckoutPage() {
   const t = translations[currentLang] || translations.en
   const isArabic = currentLang === 'ar'
 
-  // Logic Handlers
   const handleInputChange = (e: any) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
-  // ✨ NAYA: Asli VIP Order Function (Sanity + WhatsApp)
   const handleWhatsAppOrder = async () => {
     if (!formData.name || !formData.address || !formData.phone) {
       alert(currentLang === 'fr' ? "Veuillez remplir tous les détails" : (currentLang === 'ar' ? "يرجى ملء جميع التفاصيل" : "Please fill in all details"))
       return
     }
 
-    setIsSubmitting(true); // Button ko loading me dalo
+    setIsSubmitting(true);
 
     try {
-      // 1. Backend API ko data bhejo
       const response = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -114,10 +110,8 @@ export default function CheckoutPage() {
 
       const data = await response.json();
 
-      // 2. WhatsApp Message Banao
       let message = `*Salam AMINA! New Order:* 🛍️%0a%0a`
       
-      // Agar Sanity me save ho gaya toh VIP Order ID add kardo
       if (data.success && data.orderNumber) {
         message += `*Order ID:* ${data.orderNumber}%0a%0a`
       }
@@ -133,7 +127,6 @@ export default function CheckoutPage() {
       message += `📞 ${formData.phone}%0a`
       message += `📍 ${formData.address}, ${formData.city}%0a`
       
-      // WhatsApp Open Karo
       const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${message}`
       window.open(whatsappUrl, '_blank')
 
@@ -141,17 +134,18 @@ export default function CheckoutPage() {
       console.error("Order process failed:", error);
       alert(currentLang === 'fr' ? "Une erreur s'est produite. Veuillez réessayer." : (currentLang === 'ar' ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
     } finally {
-      setIsSubmitting(false); // Loading band karo
+      setIsSubmitting(false);
     }
   }
 
   // Empty Cart View
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F4F1EA] text-center px-4">
-        <span className="text-5xl text-[#D4A373] mb-4">❦</span>
-        <h2 className="text-3xl font-bold mb-4 font-serif text-[#2C2C2C]">{t.emptyCart}</h2>
-        <Link href={`/${currentLang}/collection`} className="bg-[#1a1a1a] text-white px-10 py-4 uppercase tracking-[0.2em] text-xs font-bold hover:bg-[#D4A373] transition-all duration-300">
+      <div className="relative flex flex-col items-center justify-center min-h-screen bg-amina-ivory text-center px-4 overflow-hidden">
+        <div className="glow-orb w-[320px] h-[320px] bg-amina-rose/20 top-1/3 left-1/2 -translate-x-1/2 pointer-events-none" />
+        <span className="relative text-5xl text-amina-gold mb-4">❦</span>
+        <h2 className="relative text-3xl font-bold mb-6 font-serif text-amina-ink">{t.emptyCart}</h2>
+        <Link href={`/${currentLang}/collection`} className="btn-glow relative bg-amina-ink text-white px-10 py-4 rounded-full uppercase tracking-[0.2em] text-xs font-bold hover:bg-amina-gold transition-all duration-500 ease-luxury shadow-luxury-sm">
           {t.goShop}
         </Link>
       </div>
@@ -159,44 +153,51 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#F4F1EA] pt-40 pb-20 px-6 ${isArabic ? 'text-right' : 'text-left'}`} dir={isArabic ? 'rtl' : 'ltr'}>
-      <div className="max-w-6xl mx-auto px-4">
+    <div className={`relative min-h-screen bg-amina-ivory pt-40 pb-20 px-6 overflow-hidden ${isArabic ? 'text-right' : 'text-left'}`} dir={isArabic ? 'rtl' : 'ltr'}>
+
+      {/* Ambient glow layer, consistent with the rest of the site */}
+      <div className="glow-orb animate-float-slow w-[380px] h-[380px] bg-amina-rose/15 -top-32 -right-20 pointer-events-none" />
+      <div className="glow-orb animate-float w-[280px] h-[280px] bg-amina-gold/15 bottom-0 -left-16 pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 relative">
         
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold font-serif text-[#2C2C2C] mb-2">{t.title}</h1>
-          <div className="w-16 h-[2px] bg-[#D4A373]/40 mx-auto"></div>
+        <div className="text-center mb-14 animate-fade-up">
+          <span className="text-3xl text-amina-gold block mb-3">❦</span>
+          <h1 className="text-3xl md:text-5xl font-bold font-serif text-shimmer animate-shimmer mb-3">{t.title}</h1>
+          <div className="w-16 h-[1px] bg-amina-gold/50 mx-auto"></div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
           
-          <div className="bg-white/50 backdrop-blur-sm p-6 md:p-10 rounded-2xl border border-[#D4A373]/20 shadow-sm">
-            <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C] flex items-center gap-2">
+          {/* SHIPPING FORM — glass card */}
+          <div className="glass-pill rounded-[2rem] p-6 md:p-10 border border-amina-border/60 shadow-luxury-sm">
+            <h2 className="text-xl font-semibold mb-8 font-serif text-amina-ink flex items-center gap-2">
               {t.shippingHeader}
             </h2>
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">{t.nameLabel}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-amina-stone">{t.nameLabel}</label>
                 <input 
                   type="text" name="name" 
-                  className="w-full p-4 bg-white border border-[#D4A373]/30 rounded-lg focus:ring-1 focus:ring-[#D4A373] focus:border-[#D4A373] outline-none transition-all placeholder-gray-300"
+                  className="w-full p-4 bg-white/80 border border-amina-gold/25 rounded-xl focus:ring-1 focus:ring-amina-gold focus:border-amina-gold outline-none transition-all placeholder-gray-300"
                   onChange={handleInputChange}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">{t.phoneLabel}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-amina-stone">{t.phoneLabel}</label>
                 <input 
                   type="tel" name="phone" 
-                  className={`w-full p-4 bg-white border border-[#D4A373]/30 rounded-lg focus:ring-1 focus:ring-[#D4A373] focus:border-[#D4A373] outline-none transition-all placeholder-gray-300 ${isArabic ? 'text-right' : 'text-left'}`}
+                  className={`w-full p-4 bg-white/80 border border-amina-gold/25 rounded-xl focus:ring-1 focus:ring-amina-gold focus:border-amina-gold outline-none transition-all placeholder-gray-300 ${isArabic ? 'text-right' : 'text-left'}`}
                   placeholder={isArabic ? "06 12..." : "06 12..."}
                   onChange={handleInputChange}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">{t.cityLabel}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-amina-stone">{t.cityLabel}</label>
                 <div className="relative">
                   <select 
                     name="city" 
-                    className="w-full p-4 bg-white border border-[#D4A373]/30 rounded-lg focus:ring-1 focus:ring-[#D4A373] focus:border-[#D4A373] outline-none appearance-none"
+                    className="w-full p-4 bg-white/80 border border-amina-gold/25 rounded-xl focus:ring-1 focus:ring-amina-gold focus:border-amina-gold outline-none appearance-none"
                     onChange={handleInputChange}
                   >
                     <option value="Casablanca">Casablanca</option>
@@ -207,66 +208,66 @@ export default function CheckoutPage() {
                     <option value="Fes">Fes</option>
                     <option value="Other">Other</option>
                   </select>
-                  <div className={`absolute top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 ${isArabic ? 'left-4' : 'right-4'}`}>▼</div>
+                  <div className={`absolute top-1/2 -translate-y-1/2 pointer-events-none text-amina-stone ${isArabic ? 'left-4' : 'right-4'}`}>▼</div>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">{t.addressLabel}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-amina-stone">{t.addressLabel}</label>
                 <textarea 
                   name="address" rows={3}
-                  className="w-full p-4 bg-white border border-[#D4A373]/30 rounded-lg focus:ring-1 focus:ring-[#D4A373] focus:border-[#D4A373] outline-none transition-all placeholder-gray-300 resize-none"
+                  className="w-full p-4 bg-white/80 border border-amina-gold/25 rounded-xl focus:ring-1 focus:ring-amina-gold focus:border-amina-gold outline-none transition-all placeholder-gray-300 resize-none"
                   onChange={handleInputChange}
                 ></textarea>
               </div>
             </form>
           </div>
 
+          {/* ORDER SUMMARY — elevated shadow, gold top accent */}
           <div>
-            <h2 className="text-xl font-semibold mb-8 font-serif text-[#2C2C2C]">{t.orderHeader}</h2>
-            <div className="bg-white border border-[#D4A373]/20 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-[#D4A373]"></div>
+            <h2 className="text-xl font-semibold mb-8 font-serif text-amina-ink">{t.orderHeader}</h2>
+            <div className="bg-white/90 backdrop-blur-sm border border-amina-border rounded-[2rem] p-6 md:p-8 shadow-luxury relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-shimmer-gold bg-[length:200%_auto] animate-shimmer"></div>
 
-              <div className="space-y-6 max-h-[400px] overflow-y-auto mb-6 pr-2 custom-scrollbar">
+              <div className="space-y-6 max-h-[400px] overflow-y-auto mb-6 pr-2">
                 {items.map((item: any) => (
-                  <div key={item.id} className="flex gap-5 border-b border-[#F4F1EA] pb-6 last:border-0">
-                    <div className="w-20 h-24 relative bg-[#F4F1EA] rounded-t-xl rounded-b-md overflow-hidden flex-shrink-0 border border-[#D4A373]/20">
+                  <div key={item.id} className="flex gap-5 border-b border-amina-ivory pb-6 last:border-0">
+                    <div className="w-20 h-24 relative bg-amina-ivory rounded-t-xl rounded-b-md overflow-hidden flex-shrink-0 border border-amina-gold/20">
                       {item.image && (
                         <Image src={item.image} alt={item.name} fill className="object-cover" />
                       )}
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
-                      <h3 className="font-medium text-[#2C2C2C] font-serif text-lg leading-tight">{item.name}</h3>
+                      <h3 className="font-medium text-amina-ink font-serif text-lg leading-tight">{item.name}</h3>
                       <div className="flex justify-between items-center mt-2">
-                        <p className="text-gray-500 text-xs tracking-widest uppercase">Qty: {item.quantity}</p>
-                        <p className="font-bold text-[#D4A373]">{item.price * item.quantity} DHS</p>
+                        <p className="text-amina-stone text-xs tracking-widest uppercase">Qty: {item.quantity}</p>
+                        <p className="font-bold text-amina-gold">{item.price * item.quantity} DHS</p>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-dashed border-[#D4A373]/30 pt-6 space-y-3">
-                <div className="flex justify-between text-gray-600 font-light">
+              <div className="border-t border-dashed border-amina-gold/30 pt-6 space-y-3">
+                <div className="flex justify-between text-amina-stone font-light">
                   <span>{t.subtotal}</span>
                   <span>{cartTotal} DHS</span>
                 </div>
-                <div className="flex justify-between font-serif text-2xl text-[#2C2C2C] pt-2">
+                <div className="flex justify-between font-serif text-2xl text-amina-ink pt-2">
                   <span>{t.total}</span>
-                  <span>{cartTotal} <span className="text-sm font-sans font-bold text-[#D4A373]">DHS</span></span>
+                  <span>{cartTotal} <span className="text-sm font-sans font-bold text-amina-gold">DHS</span></span>
                 </div>
-                <p className="text-[10px] text-gray-400 text-center mt-2 italic">
+                <p className="text-[10px] text-amina-stone text-center mt-2 italic">
                   {t.shippingNote}
                 </p>
               </div>
 
-              {/* ✨ NAYA: Disable Button on Submit ✨ */}
               <button 
                 onClick={handleWhatsAppOrder}
                 disabled={isSubmitting}
-                className={`w-full font-bold py-4 px-6 rounded-xl mt-8 flex items-center justify-center gap-3 transition-all shadow-lg ${
+                className={`btn-glow w-full font-bold py-4 px-6 rounded-full mt-8 flex items-center justify-center gap-3 transition-all duration-500 ease-luxury shadow-lg ${
                   isSubmitting 
                     ? 'bg-gray-400 text-white cursor-not-allowed opacity-70' 
-                    : 'bg-[#1a1a1a] hover:bg-[#D4A373] hover:shadow-xl hover:-translate-y-1 text-white'
+                    : 'bg-amina-ink hover:bg-amina-gold hover:shadow-glow-gold hover:-translate-y-1 text-white'
                 }`}
               >
                 <span className="uppercase tracking-widest text-xs">
@@ -279,7 +280,7 @@ export default function CheckoutPage() {
                   </svg>
                 )}
               </button>
-              <p className="text-center text-[10px] text-gray-400 mt-4 opacity-70 uppercase tracking-widest">{t.redirectNote}</p>
+              <p className="text-center text-[10px] text-amina-stone mt-4 opacity-70 uppercase tracking-widest">{t.redirectNote}</p>
             </div>
           </div>
 

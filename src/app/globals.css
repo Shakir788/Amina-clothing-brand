@@ -6,7 +6,6 @@
    SANITY STUDIO BACKGROUND (VIP LUXURY FIX)
 ========================================= */
 
-/* Target entire Studio safely */
 [data-sanity] {
   position: relative;
   background: linear-gradient(
@@ -18,7 +17,6 @@
   z-index: 0;
 }
 
-/* 🖼️ Safe background image (Wallpaper) */
 [data-sanity]::before {
   content: "";
   position: fixed;
@@ -26,44 +24,151 @@
   background-image: url("https://images.unsplash.com/photo-1603570419880-0b8e0c7a5b74?q=80&w=2000");
   background-size: cover;
   background-position: center;
-  
-  /* 👇 WALLPAPER OPACITY: Ise 0.03 se 0.1 ke beech change karke dekh (Abhi 0.06 hai) */
-  opacity: 0.06; 
-  
+  opacity: 0.06;
   z-index: -1;
-  pointer-events: none; /* Clicks block nahi honge */
+  pointer-events: none;
 }
 
-/* 🧊 Pane styling (Glassmorphism Base) */
 [data-sanity] [data-ui="Pane"] {
-  background-color: rgba(255, 255, 255, 0.85) !important; /* Thoda transparent taaki wallpaper dikhe */
+  background-color: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(8px);
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(195, 153, 119, 0.05);
-  margin: 6px; /* Pane ke chaaron taraf thoda space jisse rounded corners chamkein */
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth premium animation */
+  margin: 6px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* 🔥 PANE HOVER EFFECT (Lift & Glow) 🔥 */
 [data-sanity] [data-ui="Pane"]:hover {
-  background-color: rgba(255, 255, 255, 0.98) !important; 
-  box-shadow: 0 12px 35px rgba(195, 153, 119, 0.15) !important; 
-  transform: translateY(-2px); 
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 12px 35px rgba(195, 153, 119, 0.15) !important;
+  transform: translateY(-2px);
 }
-
 
 [data-sanity] button {
   border-radius: 8px !important;
   transition: all 0.3s ease-in-out !important;
 }
 
-
 [data-sanity] button[data-intent="primary"]:hover {
-  transform: translateY(-2px); 
-  box-shadow: 0 6px 18px rgba(195, 153, 119, 0.4) !important; 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(195, 153, 119, 0.4) !important;
 }
-
 
 [data-sanity] button:hover {
   opacity: 0.85;
+}
+
+/* =========================================
+   AMINA STOREFRONT — PREMIUM LAYER
+========================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #E8B4B8;
+  color: #1C1512;
+}
+
+/* Slim, elegant scrollbar for the storefront */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F9F7F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9C7B4;
+  border-radius: 999px;
+  border: 2px solid #F9F7F2;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C2A88F;
+}
+
+/* Gold shimmer text (use on headings/logos for a subtle metallic sheen) */
+.text-shimmer {
+  background-image: linear-gradient(90deg, #B8917A 0%, #E9CBA7 25%, #D4A373 50%, #E9CBA7 75%, #B8917A 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Frosted glass pill — used for the floating nav */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Soft ambient glow orbs used behind hero / section backgrounds */
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+/* 3D tilt card — perspective wrapper + tilt on hover, no JS required */
+.tilt-wrap {
+  perspective: 1400px;
+}
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.tilt-wrap:hover .tilt-card {
+  transform: rotateX(4deg) rotateY(-6deg) translateY(-10px) scale(1.015);
+}
+.tilt-card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+  background-size: 250% 250%;
+  background-position: -100% -100%;
+  opacity: 0;
+  transition: opacity 0.5s ease, background-position 0.9s ease;
+  pointer-events: none;
+}
+.tilt-wrap:hover .tilt-card-shine {
+  opacity: 1;
+  background-position: 100% 100%;
+}
+
+/* Magnetic-feel CTA button glow */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(232,180,184,0.6), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+.btn-glow:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card, .tilt-card-shine, .glow-orb, .animate-float, .animate-float-slow, .animate-shimmer {
+    animation: none !important;
+    transition: none !important;
+  }
+  .tilt-wrap:hover .tilt-card {
+    transform: none;
+  }
 }
