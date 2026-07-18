@@ -91,7 +91,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
           sizes,
           colors,
           originalPrice,
-          inStock // ✨ NAYA: In-stock status database se lana hai
+          inStock
         }`;
         const data = await client.fetch(query);
         setProduct(data);
@@ -116,7 +116,11 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   const displayProductName = activeColorName ? `${baseProductName} - ${activeColorName}` : baseProductName;
 
   const displayDescription = activeColorObject ? (lang === 'fr' && activeColorObject.colorDescription_fr ? activeColorObject.colorDescription_fr : lang === 'ar' && activeColorObject.colorDescription_ar ? activeColorObject.colorDescription_ar : activeColorObject.colorDescription) : (product?.description || t.staticDesc);
-  const displayImages = activeColorObject?.colorImages?.length > 0 ? activeColorObject.colorImages : product?.image ? [product.image] : [];
+  
+  // 🚀 FIX: Ab ye Main Image aur Gallery Images dono ko combine karke ek array banayega
+  const displayImages = activeColorObject?.colorImages?.length > 0 
+    ? activeColorObject.colorImages 
+    : [product?.image, ...(product?.gallery || [])].filter(Boolean);
 
   const nextImage = (e?: React.MouseEvent) => { if(e) e.stopPropagation(); setCurrentImageIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1)); };
   const prevImage = (e?: React.MouseEvent) => { if(e) e.stopPropagation(); setCurrentImageIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1)); };
@@ -151,10 +155,8 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
   const currentPrice = Number(product.price);
   const oldPrice = Number(product.originalPrice);
   
-  // ✨ NAYA: Stock check
   const isOutOfStock = product.inStock === false;
   
-  // Discount tabhi dikhao jab original price ho, aur product stock me ho
   const hasDiscount = oldPrice && oldPrice > currentPrice && !isOutOfStock;
   const discountPercentage = hasDiscount ? Math.round(((oldPrice - currentPrice) / oldPrice) * 100) : 0;
 
@@ -164,7 +166,9 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 relative items-start">
           
           {/* LEFT: ✨ ELEGANT LUXURY SLIDER ✨ */}
-          <div className="flex justify-center w-full lg:sticky lg:top-32">
+          <div className="flex flex-col items-center w-full lg:sticky lg:top-32">
+            
+            {/* MAIN BIG IMAGE */}
             <div 
               className="relative w-full max-w-[420px] aspect-[3/4] bg-white rounded-t-[100px] rounded-b-2xl overflow-hidden shadow-[0_20px_50px_rgba(212,163,115,0.15)] border border-[#D4A373]/20 group cursor-zoom-in"
               onTouchStart={handleTouchStart}
@@ -172,7 +176,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
               onClick={() => setIsZoomModalOpen(true)}
               title="Click to view full screen"
             >
-                {/* Main Current Image */}
                 {displayImages.length > 0 && (
                   <Image
                     src={urlFor(displayImages[currentImageIndex]).url()}
@@ -183,7 +186,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
                   />
                 )}
 
-                {/* 🚫 VIP SOLD OUT OVERLAY  */}
                 {isOutOfStock && (
                   <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px] z-20 flex items-center justify-center pointer-events-none">
                     <span className="bg-[#2C2C2C] text-white text-xs uppercase tracking-[0.3em] px-6 py-3 font-bold shadow-2xl">
@@ -192,19 +194,16 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
                   </div>
                 )}
 
-                {/* Discount Badge */}
                 {hasDiscount && (
                    <div className="absolute top-6 right-6 z-20 bg-[#8C3A3A] text-white text-[10px] font-bold px-3 py-1 uppercase tracking-widest pointer-events-none">
                       -{discountPercentage}%
                    </div>
                 )}
 
-                {/* Zoom Icon Hint */}
                 <div className="absolute top-6 left-6 z-20 bg-white/80 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2C2C2C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                 </div>
 
-                {/* Slider Controls */}
                 {displayImages.length > 1 && (
                   <>
                     <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-[#2C2C2C] shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-30">
@@ -213,14 +212,31 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
                     <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-[#2C2C2C] shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-30">
                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-30 bg-white/40 backdrop-blur-md px-3 py-2 rounded-full" onClick={(e) => e.stopPropagation()}>
-                      {displayImages.map((_: any, idx: number) => (
-                        <button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`h-2 rounded-full transition-all duration-300 ${currentImageIndex === idx ? 'bg-[#2C2C2C] w-6' : 'bg-white w-2 hover:bg-[#D4A373]'}`} />
-                      ))}
-                    </div>
                   </>
                 )}
             </div>
+
+            {/* 📸 NEW: THUMBNAILS GALLERY (Zara Style) */}
+            {displayImages.length > 1 && (
+              <div className="flex gap-3 mt-6 overflow-x-auto pb-2 scrollbar-hide justify-center w-full max-w-[420px]">
+                {displayImages.map((img: any, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`relative w-20 h-24 rounded-lg overflow-hidden border-2 transition-all duration-300 flex-shrink-0 ${
+                      currentImageIndex === idx ? 'border-[#D4A373] opacity-100 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <Image
+                      src={urlFor(img).url()}
+                      alt={`Thumbnail ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* RIGHT: Product Details */}
@@ -237,7 +253,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
 
             <div className="flex items-center gap-4 text-2xl md:text-3xl font-light mb-10">
                 {isOutOfStock ? (
-                   // Agar out of stock hai toh yahan clear bata do
                    <span className="text-[#8C3A3A] font-bold uppercase tracking-widest text-lg md:text-xl">Out of Stock</span>
                 ) : hasDiscount ? (
                   <>
@@ -250,7 +265,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
                 )}
             </div>
 
-            {/* 🎨 DYNAMIC COLOR SELECTOR */}
             {product.colors && product.colors.length > 0 && (
               <div className="mb-8">
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.selectColor}:</p>
@@ -266,7 +280,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
               </div>
             )}
 
-            {/* 📏 DYNAMIC SIZE SELECTOR */}
             {product.sizes && product.sizes.length > 0 && (
               <div className="mb-10">
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{t.selectSize}:</p>
@@ -278,9 +291,7 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
               </div>
             )}
 
-            {/* 🛒 ACTION BUTTONS */}
             <div className="flex flex-col gap-4 mb-12">
-              {}
               <button 
                 onClick={handleAddToCart} 
                 disabled={isOutOfStock}
@@ -296,7 +307,6 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
               <button onClick={handleWhatsAppClick} className="w-full border border-[#25D366] text-[#25D366] py-4 uppercase tracking-[0.2em] hover:bg-[#25D366] hover:text-white transition-colors duration-300 text-xs font-bold flex items-center justify-center gap-2"><span>{t.orderWhatsApp}</span></button>
             </div>
 
-            {/* 📜 ACCORDIONS */}
             <div className="border-t border-[#D4A373]/20">
               <div className="border-b border-[#D4A373]/20">
                 <button onClick={() => toggleAccordion('description')} className="w-full py-4 flex justify-between items-center text-sm uppercase tracking-wider font-medium text-gray-800 hover:text-[#D4A373] transition-colors">{t.descTitle}<span>{openSection === 'description' ? '−' : '+'}</span></button>
@@ -315,14 +325,12 @@ export default function ProductPage({ params }: { params: { slug: string, lang: 
           </div>
         </div>
 
-        {/* RELATED PRODUCTS */}
         <div className="max-w-7xl mx-auto mt-32 border-t border-[#D4A373]/20 pt-16">
            <h2 className="text-3xl font-serif text-center mb-12 text-[#2C2C2C]">{t.relatedTitle}</h2>
            <RelatedProducts currentSlug={params.slug} category={categoryValue} lang={lang} />
         </div>
       </div>
 
-      {/* ✨ CLEAN STATIC ZOOM MODAL ✨ */}
       {isZoomModalOpen && (
         <div 
           className={`fixed inset-0 z-[100] bg-white/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10 ${isModalZoomed ? 'overflow-auto items-start justify-start cursor-zoom-out' : 'cursor-zoom-in'}`}
