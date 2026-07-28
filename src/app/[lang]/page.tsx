@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { client } from '@/sanity/lib/client'; 
 import ProductCard from '@/components/product/ProductCard'; 
-
+import HeroWrapper from '@/components/hero/HeroWrapper';
 
 export const revalidate = 0;
 
@@ -67,56 +67,8 @@ export default async function HomePage({ params }: { params: { lang: string } })
   return (
     <div className={`min-h-screen bg-amina-ivory ${isArabic ? 'font-arabic' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
 
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-black">
-          <video
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            controls={false}
-          >
-            <source src="/video.mp4" type="video/mp4" />
-          </video>
-          {/* Vignette for legibility, NOT a white wash — video stays rich and visible */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amina-ivory" />
-        </div>
-
-        {/* Ambient glow — kept low and off to the sides, doesn't fog the copy */}
-        <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-          <div className="glow-orb animate-float-slow w-[380px] h-[380px] bg-amina-rose/20 -top-24 -left-24" />
-          <div className="glow-orb animate-float w-[300px] h-[300px] bg-amina-gold/20 top-10 -right-20" />
-        </div>
-
-        <div className="relative z-10 text-center px-6 max-w-4xl mt-16 animate-fade-up">
-          <p className="text-xs md:text-sm font-bold tracking-[0.35em] text-white/90 mb-6 uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-            {t.subtitle}
-          </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-8 tracking-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
-            {t.title.split(' ').map((word: string, i: number) => (
-              i === t.title.split(' ').length - 1 ? (
-                <span key={i} className="text-shimmer animate-shimmer bg-shimmer-gold">{word}</span>
-              ) : (
-                <span key={i}>{word}{' '}</span>
-              )
-            ))}
-          </h1>
-          <p className="text-lg md:text-xl text-white/95 font-medium mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-            {t.description}
-          </p>
-          <Link 
-            href={`/${params.lang}/collection`}
-            className="btn-glow inline-block border-2 border-white/80 px-10 py-4 text-xs font-bold tracking-[0.2em] uppercase text-white hover:bg-white hover:text-amina-ink hover:border-white transition-all duration-500 ease-luxury bg-white/10 backdrop-blur-md shadow-luxury-sm rounded-full"
-          >
-            {t.cta}
-          </Link>
-        </div>
-      </section>
+      {/* ================= HERO SECTION — cinematic caftan assembly ================= */}
+      <HeroWrapper lang={params.lang} />
 
       {/* ================= ESSENCE SECTION ================= */}
       <section className="relative py-24 px-6 bg-amina-ivory overflow-hidden">

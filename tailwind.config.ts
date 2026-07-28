@@ -9,14 +9,14 @@ const config: Config = {
       colors: {
         amina: {
           black: "#1C1B1A",
-          ink: "#1C1512",       // deeper, warmer near-black for rich text/shadows
+          ink: "#1C1512",
           sand: "#F9F7F2",
-          ivory: "#FBF7F3",     // slightly cooler bg for hero/product sections
+          ivory: "#FBF7F3",
           white: "#FFFFFF",
-          clay: "#C2A88F",      // existing gold/clay accent
-          gold: "#D4A373",      // brand accent used across components
-          rose: "#E8B4B8",      // new: soft dusty rose for feminine glow
-          roseDeep: "#B8717C",  // new: deeper rose for hover/contrast states
+          clay: "#C2A88F",
+          gold: "#D4A373",
+          rose: "#E8B4B8",
+          roseDeep: "#B8717C",
           terracotta: "#A05044",
           stone: "#8C857F",
           border: "#EBE5DF",
@@ -50,12 +50,19 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(24px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        // ✅ NAYA: Hero transition ke liye
+        'fade-in': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
       animation: {
         float: 'float 7s ease-in-out infinite',
         'float-slow': 'float 11s ease-in-out infinite',
         shimmer: 'shimmer 3.5s linear infinite',
         'fade-up': 'fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both',
+        // ✅ NAYA
+        'fade-in': 'fade-in 2000ms ease-in-out forwards',
       },
       backgroundImage: {
         'shimmer-gold': 'linear-gradient(90deg, #B8917A 0%, #E9CBA7 25%, #D4A373 50%, #E9CBA7 75%, #B8917A 100%)',

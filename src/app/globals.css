@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* =========================================
-   SANITY STUDIO BACKGROUND (VIP LUXURY FIX)
+   SANITY STUDIO BACKGROUND
 ========================================= */
 
 [data-sanity] {
@@ -76,7 +76,6 @@ body {
   color: #1C1512;
 }
 
-/* Slim, elegant scrollbar for the storefront */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -92,7 +91,7 @@ body {
   background: #C2A88F;
 }
 
-/* Gold shimmer text (use on headings/logos for a subtle metallic sheen) */
+/* Gold shimmer text */
 .text-shimmer {
   background-image: linear-gradient(90deg, #B8917A 0%, #E9CBA7 25%, #D4A373 50%, #E9CBA7 75%, #B8917A 100%);
   background-size: 200% auto;
@@ -101,7 +100,7 @@ body {
   color: transparent;
 }
 
-/* Frosted glass pill — used for the floating nav */
+/* Frosted glass pill */
 .glass-pill {
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(18px) saturate(160%);
@@ -109,7 +108,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-/* Soft ambient glow orbs used behind hero / section backgrounds */
+/* Glow orbs */
 .glow-orb {
   position: absolute;
   border-radius: 9999px;
@@ -117,7 +116,7 @@ body {
   pointer-events: none;
 }
 
-/* 3D tilt card — perspective wrapper + tilt on hover, no JS required */
+/* 3D tilt card */
 .tilt-wrap {
   perspective: 1400px;
 }
@@ -144,7 +143,7 @@ body {
   background-position: 100% 100%;
 }
 
-/* Magnetic-feel CTA button glow */
+/* CTA button glow */
 .btn-glow {
   position: relative;
   overflow: hidden;
@@ -163,8 +162,29 @@ body {
   opacity: 1;
 }
 
+/* =========================================
+   ✅ HERO FADE TRANSITION
+   HeroWrapper mein animate-fadeIn use hota hai
+========================================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 2000ms ease-in-out forwards;
+}
+
+/* Reduced motion respect */
 @media (prefers-reduced-motion: reduce) {
-  .tilt-card, .tilt-card-shine, .glow-orb, .animate-float, .animate-float-slow, .animate-shimmer {
+  .tilt-card,
+  .tilt-card-shine,
+  .glow-orb,
+  .animate-float,
+  .animate-float-slow,
+  .animate-shimmer,
+  .animate-fadeIn,
+  .animate-fade-in {
     animation: none !important;
     transition: none !important;
   }
