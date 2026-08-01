@@ -42,7 +42,7 @@ export default function SplashScreen({ children }: any) {
             height: "100%",
             position: "absolute",
             inset: 0,
-            objectFit: "cover",
+            objectFit: "contain",
             zIndex: 10,
             opacity: 0,
             animation: "logoVIPEntry 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards"
