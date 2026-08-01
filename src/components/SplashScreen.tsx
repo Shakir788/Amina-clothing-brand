@@ -5,24 +5,16 @@ export default function SplashScreen({ children }: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 🛡️ Safety fallback timer (11 seconds taaki agar onEnded miss ho toh bhi deadlock na ho)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 11000);
-
+    const timer = setTimeout(() => setLoading(false), 11000);
     return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
     return (
       <div style={{
-        backgroundColor: "#050505",
+        backgroundColor: "#e1e1e0",
         height: "100vh",
         width: "100vw",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         position: "fixed",
         top: 0,
         left: 0,
@@ -30,40 +22,26 @@ export default function SplashScreen({ children }: any) {
         overflow: "hidden"
       }}>
 
-        {/* ✨ Ambient golden glow behind video */}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "radial-gradient(circle at center, rgba(212,175,55,0.10) 0%, transparent 65%)",
-          zIndex: 5
+          zIndex: 1,
+          opacity: 0.5,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.85  0 0 0 0 0.83  0 0 0 0 0.78  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat"
         }} />
 
-        {/* ✨ Twinkling sparkles filling empty space */}
         <div style={{
           position: "absolute",
           inset: 0,
-          zIndex: 6,
-          overflow: "hidden"
-        }}>
-          {[...Array(18)].map((_, i) => (
-            <div
-              key={i}
-              style={{
-                position: "absolute",
-                width: "3px",
-                height: "3px",
-                background: "rgba(212,175,55,0.7)",
-                borderRadius: "50%",
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animation: `twinkle ${2 + Math.random() * 2}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 2}s`
-              }}
-            />
-          ))}
-        </div>
+          zIndex: 2,
+          opacity: 0.07,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23B8860B' stroke-width='1'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Cpath d='M40 22 L58 40 L40 58 L22 40 Z'/%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "80px 80px"
+        }} />
 
-        {/* 🎬 FULL SCREEN CINEMATIC VIDEO LOGO */}
+        {/* 🎬 Video with feathered top/bottom edges — no hard rectangle line */}
         <video
           src="/videos/amina-logo.mp4"
           autoPlay
@@ -78,6 +56,8 @@ export default function SplashScreen({ children }: any) {
             objectFit: "contain",
             zIndex: 10,
             opacity: 0,
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
             animation: "logoVIPEntry 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards"
           }}
         />
@@ -86,10 +66,6 @@ export default function SplashScreen({ children }: any) {
           @keyframes logoVIPEntry {
             0% { opacity: 0; filter: blur(8px); }
             100% { opacity: 1; filter: blur(0px); }
-          }
-          @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
           }
         `}</style>
       </div>
