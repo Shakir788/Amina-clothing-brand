@@ -29,7 +29,40 @@ export default function SplashScreen({ children }: any) {
         zIndex: 99999,
         overflow: "hidden"
       }}>
-        
+
+        {/* ✨ Ambient golden glow behind video */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(circle at center, rgba(212,175,55,0.10) 0%, transparent 65%)",
+          zIndex: 5
+        }} />
+
+        {/* ✨ Twinkling sparkles filling empty space */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 6,
+          overflow: "hidden"
+        }}>
+          {[...Array(18)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: "absolute",
+                width: "3px",
+                height: "3px",
+                background: "rgba(212,175,55,0.7)",
+                borderRadius: "50%",
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animation: `twinkle ${2 + Math.random() * 2}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
         {/* 🎬 FULL SCREEN CINEMATIC VIDEO LOGO */}
         <video
           src="/videos/amina-logo.mp4"
@@ -53,6 +86,10 @@ export default function SplashScreen({ children }: any) {
           @keyframes logoVIPEntry {
             0% { opacity: 0; filter: blur(8px); }
             100% { opacity: 1; filter: blur(0px); }
+          }
+          @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
           }
         `}</style>
       </div>
