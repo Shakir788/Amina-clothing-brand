@@ -72,7 +72,7 @@ export default defineType({
       group: 'basic',
     }),
 
-    // ✨ NAYA: OUT OF STOCK TOGGLE ✨
+    // ✨ OUT OF STOCK TOGGLE ✨
     defineField({
       name: 'inStock',
       title: '📦 In Stock (Available for Sale?)',
@@ -178,6 +178,22 @@ export default defineType({
     defineField({ name: 'name_fr', title: 'Main Product French Name', type: 'string', group: 'translations' }),
     defineField({ name: 'name_ar', title: 'Main Product Arabic Name', type: 'string', group: 'translations' }),
 
+    // ✨ NAYA: Description translations — auto-filled by the "🌐 Auto-Translate" action ✨
+    defineField({
+      name: 'description_fr',
+      title: 'General Description (French)',
+      type: 'text',
+      rows: 3,
+      group: 'translations',
+    }),
+    defineField({
+      name: 'description_ar',
+      title: 'General Description (Arabic)',
+      type: 'text',
+      rows: 3,
+      group: 'translations',
+    }),
+
     // ---------------- SETTINGS ----------------
     defineField({
       name: 'status',
@@ -203,7 +219,7 @@ export default defineType({
     }),
   ],
 
-  // ✨ NAYA: Sanity list me hi dikhega ki product stock me hai ya nahi
+  // ✨ Sanity list me hi dikhega ki product stock me hai ya nahi
   preview: {
     select: {
       title: 'name',

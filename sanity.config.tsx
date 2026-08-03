@@ -8,6 +8,7 @@ import {apiVersion, dataset, projectId} from './src/sanity/env'
 import {schema} from './src/sanity/schemaTypes'
 import {structure} from './src/sanity/structure'
 import { myTheme } from './src/sanity/theme' 
+import { translateAction } from './src/sanity/actions/translateAction'
 import React from 'react' 
 
 export default defineConfig({
@@ -26,6 +27,12 @@ export default defineConfig({
     colorInput(),
     visionTool({defaultApiVersion: apiVersion}),
   ],
+
+  // 🌐 Adds the "Auto-Translate" button to the product editor's action bar
+  document: {
+    actions: (prev, context) =>
+      context.schemaType === 'product' ? [...prev, translateAction] : prev,
+  },
 
   // 🔥 100% WORKING VIP BACKGROUND HACK 🔥
   studio: {
