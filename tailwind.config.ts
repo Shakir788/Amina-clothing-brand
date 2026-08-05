@@ -50,10 +50,14 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateY(24px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        // ✅ NAYA: Hero transition ke liye
         'fade-in': {
           '0%':   { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        // ✅ NAYA: Hero text ke sequential entrance ke liye
+        slideUpFadeIn: {
+          '0%':   { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
@@ -61,8 +65,9 @@ const config: Config = {
         'float-slow': 'float 11s ease-in-out infinite',
         shimmer: 'shimmer 3.5s linear infinite',
         'fade-up': 'fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both',
-        // ✅ NAYA
         'fade-in': 'fade-in 2000ms ease-in-out forwards',
+        // ✅ NAYA
+        slideUpFadeIn: 'slideUpFadeIn 1s cubic-bezier(0.22, 1, 0.36, 1) both',
       },
       backgroundImage: {
         'shimmer-gold': 'linear-gradient(90deg, #B8917A 0%, #E9CBA7 25%, #D4A373 50%, #E9CBA7 75%, #B8917A 100%)',

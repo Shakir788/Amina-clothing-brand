@@ -1,76 +1,105 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
-export default function SplashScreen({ children }: any) {
-  const [loading, setLoading] = useState(true);
+export default function SplashScreen({ children }: { children: React.ReactNode }) {
+  // states for smooth cross-fade previously implemented
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMounted, setIsMounted] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 11000);
-    return () => clearTimeout(timer);
+    // ⏳ 3 seconds baad Fade Out start karo
+    const fadeTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 3000); 
+
+    // ⏳ 4 seconds baad component ko remove karo
+    const mountTimer = setTimeout(() => {
+      setIsMounted(false);
+    }, 4000);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(mountTimer);
+    };
   }, []);
 
-  if (loading) {
-    return (
-      <div style={{
-        backgroundColor: "#e1e1e0",
-        height: "100vh",
-        width: "100vw",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 99999,
-        overflow: "hidden"
-      }}>
+  if (!isMounted) {
+    return <>{children}</>;
+  }
 
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 1,
-          opacity: 0.5,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.85  0 0 0 0 0.83  0 0 0 0 0.78  0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat"
-        }} />
+  return (
+    <>
+      {/* 🌐 MAIN WEBSITE CONTENT (Pre-loads behind overlay) */}
+      {children}
 
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 2,
-          opacity: 0.07,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23B8860B' stroke-width='1'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z'/%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Cpath d='M40 22 L58 40 L40 58 L22 40 Z'/%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "80px 80px"
-        }} />
+      {/* ✨ THE PERFECTED SPLASH SCREEN OVERLAY */}
+      <div 
+        className={`fixed inset-0 z-[99999] w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0a0a0a] 
+        transition-opacity duration-1000 ease-in-out
+        ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      >
+        
+        {/* 🖼️ BOUTIQUE INTERIOR IMAGE (LOW OPACITY PNG) */}
+        <div className="absolute inset-0 z-1 opacity-[0.15]">  {/* 👈 Opacity fixed to 0.15 */}
+          <Image
+            src="/images/hero/boutique_interior.png" // 👈 Image path updated to PNG
+            alt="Amina Interior Background"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
 
-        {/* 🎬 Video with feathered top/bottom edges — no hard rectangle line */}
-        <video
-          src="/videos/amina-logo.mp4"
-          autoPlay
-          muted
-          playsInline
-          onEnded={() => setLoading(false)}
-          style={{
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-            inset: 0,
-            objectFit: "contain",
-            zIndex: 10,
-            opacity: 0,
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
-            animation: "logoVIPEntry 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards"
-          }}
-        />
+        {/* 🌟 LOGO & TAGLINE FLEX CONTAINER */}
+        <div className="relative z-10 flex flex-col items-center text-center">
+          
+          {/* 👑 CRISP GOLD LOGO */}
+          <div 
+            className="w-[55%] max-w-[320px] aspect-square mb-6"
+            style={{
+              opacity: 0, // 👈 Starts invisible to prevent flashing
+              animation: "luxuryReveal 2s cubic-bezier(0.23, 1, 0.32, 1) forwards" // Starts immediately
+            }}
+          >
+            <Image
+              src="/images/amina-splash.png" 
+              alt="Amina Luxury Logo"
+              fill
+              priority 
+              className="object-contain"
+            />
+          </div>
 
+          {/* 🏷️ THE LOVELY TAGLINE */}
+          <p 
+            className="text-[#C8A870] text-[11px] md:text-xs font-serif tracking-[0.6em] uppercase"
+            style={{
+              opacity: 0,
+              animation: "taglineFadeUp 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
+              animationDelay: "0.8s" // 👈 Logo ke thodi der baad ayega sequential flow mein
+            }}
+          >
+            Timeless Moroccan Elegance
+          </p>
+
+        </div>
+
+        {/* ✨ ANIMATION KEYFRAMES */}
         <style jsx>{`
-          @keyframes logoVIPEntry {
-            0% { opacity: 0; filter: blur(8px); }
-            100% { opacity: 1; filter: blur(0px); }
+          @keyframes luxuryReveal {
+            0% { opacity: 0; transform: scale(0.85); filter: blur(12px); }
+            40% { opacity: 1; filter: blur(0px); } /* Logo comes in quickly */
+            100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+          }
+
+          @keyframes taglineFadeUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
           }
         `}</style>
       </div>
-    );
-  }
-
-  return children;
+    </>
+  );
 }
