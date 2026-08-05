@@ -13,10 +13,10 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
       setIsVisible(false);
     }, 3000); 
 
-    // ⏳ 4 seconds baad component ko remove karo
+    // ⏳ 4.5 seconds baad component ko remove karo (500ms EXTRA BUFFER)
     const mountTimer = setTimeout(() => {
       setIsMounted(false);
-    }, 4000);
+    }, 4500); // 👈 Yahan 4000 ko 4500 kar diya hai
 
     return () => {
       clearTimeout(fadeTimer);
