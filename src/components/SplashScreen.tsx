@@ -3,37 +3,23 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function SplashScreen({ children }: { children: React.ReactNode }) {
-  // states for smooth cross-fade previously implemented
   const [isVisible, setIsVisible] = useState(true);
-  const [isMounted, setIsMounted] = useState(true);
 
   useEffect(() => {
-    // ⏳ 3 seconds baad Fade Out start karo
+    // ⏳ Sirf 3 seconds baad Fade Out start hoga. Koi unmount timer nahi.
     const fadeTimer = setTimeout(() => {
       setIsVisible(false);
     }, 3000); 
 
-    // ⏳ 4.5 seconds baad component ko remove karo (500ms EXTRA BUFFER)
-    const mountTimer = setTimeout(() => {
-      setIsMounted(false);
-    }, 4500); // 👈 Yahan 4000 ko 4500 kar diya hai
-
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(mountTimer);
-    };
+    return () => clearTimeout(fadeTimer);
   }, []);
-
-  if (!isMounted) {
-    return <>{children}</>;
-  }
 
   return (
     <>
-      {/* 🌐 MAIN WEBSITE CONTENT (Pre-loads behind overlay) */}
+      {/* 🌐 MAIN WEBSITE CONTENT */}
       {children}
 
-      {/* ✨ THE PERFECTED SPLASH SCREEN OVERLAY */}
+      {/* ✨ THE PERFECTED SPLASH SCREEN OVERLAY (Never unmounts, just hides) */}
       <div 
         className={`fixed inset-0 z-[99999] w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-[#0a0a0a] 
         transition-opacity duration-1000 ease-in-out
@@ -41,9 +27,9 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
       >
         
         {/* 🖼️ BOUTIQUE INTERIOR IMAGE (LOW OPACITY PNG) */}
-        <div className="absolute inset-0 z-1 opacity-[0.15]">  {/* 👈 Opacity fixed to 0.15 */}
+        <div className="absolute inset-0 z-1 opacity-[0.15]"> 
           <Image
-            src="/images/hero/boutique_interior.png" // 👈 Image path updated to PNG
+            src="/images/hero/boutique_interior.png" 
             alt="Amina Interior Background"
             fill
             priority
@@ -59,8 +45,8 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
           <div 
             className="w-[55%] max-w-[320px] aspect-square mb-6"
             style={{
-              opacity: 0, // 👈 Starts invisible to prevent flashing
-              animation: "luxuryReveal 2s cubic-bezier(0.23, 1, 0.32, 1) forwards" // Starts immediately
+              opacity: 0, 
+              animation: "luxuryReveal 2s cubic-bezier(0.23, 1, 0.32, 1) forwards" 
             }}
           >
             <Image
@@ -78,7 +64,7 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
             style={{
               opacity: 0,
               animation: "taglineFadeUp 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
-              animationDelay: "0.8s" // 👈 Logo ke thodi der baad ayega sequential flow mein
+              animationDelay: "0.8s" 
             }}
           >
             Timeless Moroccan Elegance
@@ -90,7 +76,7 @@ export default function SplashScreen({ children }: { children: React.ReactNode }
         <style jsx>{`
           @keyframes luxuryReveal {
             0% { opacity: 0; transform: scale(0.85); filter: blur(12px); }
-            40% { opacity: 1; filter: blur(0px); } /* Logo comes in quickly */
+            40% { opacity: 1; filter: blur(0px); } 
             100% { opacity: 1; transform: scale(1); filter: blur(0px); }
           }
 
