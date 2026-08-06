@@ -102,10 +102,13 @@ export default defineType({
     }),
 
     defineField({
-      name: 'videoUrl',
-      title: '🎬 Cinematic Video URL (9:16)',
-      description: 'Paste your portrait video link here (Pexels, AWS, etc.) for the luxury hover effect.',
-      type: 'url',
+      name: 'videoFile',
+      title: '🎬 Cinematic Video (Upload)',
+      description: 'Upload your portrait video (9:16) here for the luxury hover effect. Format: MP4.',
+      type: 'file', // 'url' ki jagah 'file' kar diya
+      options: {
+        accept: 'video/mp4,video/quicktime' // Sirf video files allow karega
+      },
       group: 'media',
     }),
 
