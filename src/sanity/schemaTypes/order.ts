@@ -21,7 +21,7 @@ export default {
     {
       name: 'city',
       title: 'City',
-      type: 'string', // Courier ke liye City bahut zaroori hai
+      type: 'string',
     },
     {
       name: 'address',
@@ -70,6 +70,50 @@ export default {
       title: 'Order Date',
       type: 'datetime',
       initialValue: () => new Date().toISOString()
-    }
+    },
+
+    // ===== NAYE FIELDS — Payment Verification =====
+    {
+      name: 'paymentMethod',
+      title: 'Mode de Paiement',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Cash Plus QR (En ligne)', value: 'online_qr' },
+          { title: 'WhatsApp / COD', value: 'whatsapp_cod' },
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'whatsapp_cod'
+    },
+    {
+      name: 'paymentStatus',
+      title: 'Statut du Paiement',
+      type: 'string',
+      description: 'Uniquement pour les paiements en ligne. Vérifiez le montant reçu sur Cash Plus avant de confirmer.',
+      options: {
+        list: [
+          { title: '⏳ En attente de vérification', value: 'pending_verification' },
+          { title: '✅ Vérifié', value: 'verified' },
+          { title: '❌ Rejeté (montant incorrect)', value: 'rejected' },
+        ],
+        layout: 'radio'
+      },
+      hidden: ({ document }: any) => document?.paymentMethod !== 'online_qr',
+    },
+    {
+      name: 'transactionId',
+      title: 'Référence Transaction (Cash Plus)',
+      type: 'string',
+      description: 'Fournie par le client, si disponible',
+      hidden: ({ document }: any) => document?.paymentMethod !== 'online_qr',
+    },
+    {
+      name: 'paymentScreenshot',
+      title: 'Capture d\'écran du Paiement',
+      type: 'image',
+      options: { hotspot: true },
+      hidden: ({ document }: any) => document?.paymentMethod !== 'online_qr',
+    },
   ]
 }
