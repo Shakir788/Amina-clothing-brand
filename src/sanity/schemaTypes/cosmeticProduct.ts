@@ -7,19 +7,18 @@ export default defineType({
   icon: () => '✨',
 
   groups: [
-    { name: 'basic', title: '📝 Infos de base', default: true },
-    { name: 'media', title: '📸 Photos & Vidéo' },
-    { name: 'details', title: '🧴 Formule & Variantes' },
-    { name: 'translations', title: '🌍 Traductions' },
-    { name: 'settings', title: '⚙️ Paramètres' },
+    { name: 'basic', title: '📝 Basic Info', default: true },
+    { name: 'media', title: '📸 Media & Video' },
+    { name: 'details', title: '🧴 Formula & Variants' },
+    { name: 'translations', title: '🌍 Translations' },
+    { name: 'settings', title: '⚙️ Settings' },
   ],
 
   fields: [
-    // ================= BASIC INFO =================
+    // ---------------- BASIC INFO ----------------
     defineField({
       name: 'name',
-      title: 'Nom du produit (Français)',
-      description: 'Nom principal affiché sur le site',
+      title: 'Product Name (English)',
       type: 'string',
       validation: (rule) => rule.required(),
       group: 'basic',
@@ -27,7 +26,7 @@ export default defineType({
 
     defineField({
       name: 'slug',
-      title: 'URL (générée automatiquement)',
+      title: 'Slug (Unique URL)',
       type: 'slug',
       options: { source: 'name', maxLength: 96 },
       validation: (rule) => rule.required(),
@@ -36,152 +35,102 @@ export default defineType({
 
     defineField({
       name: 'brand',
-      title: 'Marque',
-      description: 'Ex: Vichy, CeraVe, La Roche-Posay...',
+      title: 'Brand',
+      description: 'e.g. Vichy, CeraVe, La Roche-Posay...',
       type: 'string',
-      validation: (rule) => rule.required(),
       group: 'basic',
     }),
 
     defineField({
       name: 'price',
-      title: 'Prix (MAD)',
+      title: 'Price (MAD)',
       type: 'number',
-      validation: (rule) => rule.required().positive(),
+      validation: (rule) => rule.required(),
       group: 'basic',
     }),
 
     defineField({
       name: 'originalPrice',
-      title: 'Ancien prix (barré) — optionnel',
-      description: 'Remplir uniquement si le produit est en promotion',
+      title: 'Original Price (Crossed Out)',
+      description: 'Optional: Use this to show a discount (e.g. 500)',
       type: 'number',
-      validation: (rule) => rule.positive(),
-      group: 'basic',
-    }),
-
-    defineField({
-      name: 'category',
-      title: 'Catégorie',
-      description: 'Sélectionnez une catégorie dans la liste',
-      type: 'string',
-      options: {
-        list: [
-          { title: '🧴 Nettoyant Visage', value: 'Nettoyant Visage' },
-          { title: '💧 Hydratant', value: 'Hydratant' },
-          { title: '☀️ Protection Solaire', value: 'Protection Solaire' },
-          { title: '✨ Sérum Anti-Âge', value: 'Sérum Anti-Âge' },
-          { title: '💦 Eau Micellaire', value: 'Eau Micellaire' },
-          { title: '🌊 Eau Thermale', value: 'Eau Thermale' },
-          { title: '🧴 Soin du Corps', value: 'Soin du Corps' },
-          { title: '💇 Soin Capillaire', value: 'Soin Capillaire' },
-          { title: '🩹 Soin de la Peau', value: 'Soin de la Peau' },
-          { title: '⚪ Dépigmentation', value: 'Dépigmentation' },
-          { title: '🧼 Savon', value: 'Savon' },
-          { title: '💊 Compléments', value: 'Compléments' },
-          { title: '🦷 Soin Bucco-dentaire', value: 'Soin Bucco-dentaire' },
-          { title: '🌸 Hygiène Intime', value: 'Hygiène Intime' },
-          { title: '🫒 Huile Visage', value: 'Huile Visage' },
-          { title: '👶 Soin Bébé', value: 'Soin Bébé' },
-          { title: '🧴 Antiseptique', value: 'Antiseptique' },
-          { title: '👁️ Contour des Yeux', value: 'Contour des Yeux' },
-          { title: '🧽 Déodorant', value: 'Déodorant' },
-          { title: '💄 Maquillage', value: 'Maquillage' },
-          { title: '🌺 Parfums', value: 'Parfums' },
-        ],
-        layout: 'dropdown', // clean dropdown, not radio buttons
-      },
-      validation: (rule) => rule.required(),
-      initialValue: 'Soin de la Peau',
-      group: 'basic',
-    }),
-
-    defineField({
-      name: 'skinConcern',
-      title: 'Préoccupation cutanée',
-      description: 'À quel problème répond ce produit ? (sélection multiple possible)',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        list: [
-          { title: 'Sécheresse', value: 'Sécheresse' },
-          { title: 'Acné / Peau grasse', value: 'Acné' },
-          { title: 'Anti-âge / Rides', value: 'Anti-âge' },
-          { title: 'Taches pigmentaires', value: 'Pigmentation' },
-          { title: 'Protection solaire', value: 'Protection solaire' },
-          { title: 'Peau sensible', value: 'Sensibilité' },
-          { title: 'Irritation / Rougeurs', value: 'Irritation' },
-          { title: 'Chute de cheveux', value: 'Chute de cheveux' },
-          { title: 'Pellicules', value: 'Pellicules' },
-        ],
-        layout: 'tags', // clean chip-style multi-select
-      },
       group: 'basic',
     }),
 
     defineField({
       name: 'description',
-      title: 'Description (Français)',
+      title: 'General Description (Default)',
       type: 'text',
-      rows: 4,
+      rows: 3,
+      group: 'basic',
+    }),
+
+    defineField({
+      name: 'category',
+      title: 'Category',
+      description: 'Select a category from the list',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Soins du Visage (Skincare)', value: 'Soins' },
+          { title: 'Parfums (Perfumes)', value: 'Parfums' },
+          { title: 'Cheveux (Haircare)', value: 'Cheveux' },
+          { title: 'Maquillage (Makeup)', value: 'Maquillage' },
+          { title: 'Nettoyant Visage (Face Cleanser)', value: 'Nettoyant Visage' },
+          { title: 'Hydratant (Moisturizer)', value: 'Hydratant' },
+          { title: 'Protection Solaire (Sunscreen)', value: 'Protection Solaire' },
+          { title: 'Corps (Body Care)', value: 'Corps' },
+        ],
+      },
+      initialValue: 'Soins',
       group: 'basic',
     }),
 
     defineField({
       name: 'inStock',
-      title: '📦 Disponible à la vente ?',
-      description: 'Désactivez pour marquer le produit comme ÉPUISÉ',
+      title: '📦 In Stock (Available for Sale?)',
+      description: 'Turn this OFF to mark the product as SOLD OUT on the website.',
       type: 'boolean',
       initialValue: true,
       group: 'basic',
     }),
 
-    // ================= MEDIA =================
+    // ---------------- MEDIA ----------------
     defineField({
       name: 'image',
-      title: 'Photo principale',
-      description: 'Glissez-déposez ou cliquez pour recadrer (crop) l\'image',
+      title: 'Main Cover Image (Default)',
       type: 'image',
-      options: {
-        hotspot: true, // crop/focus point tool
-      },
+      options: { hotspot: true },
       validation: (rule) => rule.required(),
       group: 'media',
     }),
 
     defineField({
       name: 'gallery',
-      title: 'Galerie de photos supplémentaires',
-      description: 'Vous pouvez glisser-déposer PLUSIEURS photos en même temps ici',
+      title: 'Image Gallery',
+      description: 'You can drag & drop MULTIPLE photos here at once',
       type: 'array',
-      of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-        },
-      ],
-      options: {
-        layout: 'grid', // visual grid, easy to reorder by dragging
-      },
+      of: [{ type: 'image', options: { hotspot: true } }],
+      options: { layout: 'grid' },
       group: 'media',
     }),
 
     defineField({
       name: 'videoFile',
-      title: '🎬 Vidéo (format portrait 9:16)',
-      description: 'Pour l\'effet vidéo au survol de la souris sur le site. Format MP4 uniquement.',
+      title: '🎬 Cinematic Video (Upload)',
+      description: 'Upload your portrait video (9:16) here for the luxury hover effect. Format: MP4.',
       type: 'file',
       options: {
-        accept: 'video/mp4,video/quicktime',
+        accept: 'video/mp4,video/quicktime'
       },
       group: 'media',
     }),
 
-    // ================= DETAILS =================
+    // ---------------- FORMULA & VARIANTS ----------------
     defineField({
       name: 'volumes',
-      title: 'Contenances disponibles',
-      description: 'Tapez une taille puis Entrée (ex: 50ml) — répétez pour en ajouter plusieurs',
+      title: '🧴 Available Volumes / Sizes',
+      description: 'e.g., 30ml, 50ml, 100ml',
       type: 'array',
       of: [{ type: 'string' }],
       options: { layout: 'tags' },
@@ -190,76 +139,37 @@ export default defineType({
 
     defineField({
       name: 'ingredients',
-      title: 'Ingrédients clés',
-      description: 'Liste des principaux actifs (pour la fiche produit)',
+      title: 'Key Ingredients',
+      description: 'Main active ingredients for the product details page.',
       type: 'text',
       rows: 3,
       group: 'details',
     }),
 
-    defineField({
-      name: 'howToUse',
-      title: 'Mode d\'emploi',
-      type: 'text',
-      rows: 3,
-      group: 'details',
-    }),
+    // ---------------- TRANSLATIONS ----------------
+    defineField({ name: 'name_fr', title: 'Product Name (French)', type: 'string', group: 'translations' }),
+    defineField({ name: 'name_ar', title: 'Product Name (Arabic)', type: 'string', group: 'translations' }),
+    defineField({ name: 'desc_fr', title: 'Description (French)', type: 'text', rows: 3, group: 'translations' }),
+    defineField({ name: 'desc_ar', title: 'Description (Arabic)', type: 'text', rows: 3, group: 'translations' }),
 
-    // ================= TRANSLATIONS =================
-    defineField({
-      name: 'name_en',
-      title: '🇬🇧 Nom (Anglais)',
-      type: 'string',
-      group: 'translations',
-    }),
-    defineField({
-      name: 'name_ar',
-      title: '🇲🇦 Nom (Arabe)',
-      type: 'string',
-      group: 'translations',
-    }),
-    defineField({
-      name: 'desc_en',
-      title: '🇬🇧 Description (Anglais)',
-      type: 'text',
-      rows: 3,
-      group: 'translations',
-    }),
-    defineField({
-      name: 'desc_ar',
-      title: '🇲🇦 Description (Arabe)',
-      type: 'text',
-      rows: 3,
-      group: 'translations',
-    }),
-
-    // ================= SETTINGS =================
+    // ---------------- SETTINGS ----------------
     defineField({
       name: 'status',
-      title: 'Statut de publication',
+      title: 'Status',
       type: 'string',
       options: {
         list: [
-          { title: '🟠 Brouillon (invisible sur le site)', value: 'draft' },
-          { title: '🟢 En ligne (visible sur le site)', value: 'approved' },
+          { title: 'Draft', value: 'draft' },
+          { title: 'Live', value: 'approved' },
         ],
         layout: 'radio',
       },
       initialValue: 'draft',
       group: 'settings',
     }),
-
-    defineField({
-      name: 'featured',
-      title: '⭐ Produit vedette',
-      description: 'Mettre en avant sur la page d\'accueil',
-      type: 'boolean',
-      initialValue: false,
-      group: 'settings',
-    }),
   ],
 
-  // Smart preview in the product list
+  // Smart Preview
   preview: {
     select: {
       title: 'name',
@@ -270,11 +180,10 @@ export default defineType({
       media: 'image',
     },
     prepare({ title, brand, price, status, inStock, media }) {
-      const stockText = inStock === false ? '🚫 Épuisé' : '✅ En stock'
-      const statusText = status === 'approved' ? '🟢 En ligne' : '🟠 Brouillon'
+      const stockText = inStock === false ? '🚫 Sold Out' : '✅ In Stock';
       return {
         title: `${brand ? brand + ' — ' : ''}${title}`,
-        subtitle: `${price ? price + ' MAD' : 'Pas de prix'} • ${stockText} • ${statusText}`,
+        subtitle: `${price ? price + ' MAD' : 'No Price'} • ${stockText} • ${status === 'approved' ? '🟢 Live' : '🟠 Draft'}`,
         media,
       }
     },
