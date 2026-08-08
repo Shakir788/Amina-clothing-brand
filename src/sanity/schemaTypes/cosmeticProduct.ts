@@ -167,6 +167,16 @@ export default defineType({
       initialValue: 'draft',
       group: 'settings',
     }),
+    
+    // YEH RAHA TERA NAYA FIELD JO ERROR DE RAHA THA
+    defineField({
+      name: 'featured',
+      title: '🌟 Featured Product',
+      description: 'Turn this ON to highlight the product on the homepage or special sections.',
+      type: 'boolean',
+      initialValue: false,
+      group: 'settings',
+    }),
   ],
 
   // Smart Preview
@@ -177,12 +187,15 @@ export default defineType({
       price: 'price',
       status: 'status',
       inStock: 'inStock',
+      featured: 'featured',
       media: 'image',
     },
-    prepare({ title, brand, price, status, inStock, media }) {
+    
+    prepare({ title, brand, price, status, inStock, featured, media }) {
       const stockText = inStock === false ? '🚫 Sold Out' : '✅ In Stock';
+      const featureStar = featured ? ' ⭐' : '';
       return {
-        title: `${brand ? brand + ' — ' : ''}${title}`,
+        title: `${brand ? brand + ' — ' : ''}${title}${featureStar}`,
         subtitle: `${price ? price + ' MAD' : 'No Price'} • ${stockText} • ${status === 'approved' ? '🟢 Live' : '🟠 Draft'}`,
         media,
       }
